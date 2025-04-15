@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\irmal\\source\\repos\\YourRide\\YourRide\\YourRide.csproj": {}
+    "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj": {}
   },
   "projects": {
-    "C:\\Users\\irmal\\source\\repos\\YourRide\\YourRide\\YourRide.csproj": {
+    "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\irmal\\source\\repos\\YourRide\\YourRide\\YourRide.csproj",
+        "projectUniqueName": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj",
         "projectName": "YourRide",
-        "projectPath": "C:\\Users\\irmal\\source\\repos\\YourRide\\YourRide\\YourRide.csproj",
+        "projectPath": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj",
         "packagesPath": "C:\\Users\\irmal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\irmal\\source\\repos\\YourRide\\YourRide\\obj\\",
+        "outputPath": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
