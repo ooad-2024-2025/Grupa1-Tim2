@@ -10,7 +10,7 @@ namespace YourRide.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            int i = 0;
+            
             _logger = logger;
         }
 

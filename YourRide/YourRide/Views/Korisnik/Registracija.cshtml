@@ -1,0 +1,105 @@
+﻿@model YourRide.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Registracija";
+    Layout = null; // Koristimo posebni layout za jednostavnost
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registracija - YourRide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100%;
+        }
+
+        .left-panel {
+            background-color: #2d7c85;
+            color: white;
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .right-panel {
+            background-color: white;
+            width: 65%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="left-panel">
+            <h1>YourRide</h1>
+            <p>Dobrodošli! Pridružite nam se već danas.</p>
+        </div>
+
+        <div class="right-panel">
+            <div class="form-box">
+                <h2 class="form-title">Registracija</h2>
+
+                <form asp-action="Registracija" method="post">
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="VrstaRacuna" class="form-label"></label>
+                        <select asp-for="VrstaRacuna" class="form-control" asp-items="Html.GetEnumSelectList<YourRide.Models.VrstaRacuna>()"></select>
+                        <span asp-validation-for="VrstaRacuna" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn text-white" style="background-color: #2d7c85;">Registruj se</button>
+                </form>
+
+                <div class="mt-3 text-center">
+                <div class="mt-3 text-center">
+                        <p>Već imate račun? <a asp-action="Prijava" asp-controller="Korisnik">Prijavite se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

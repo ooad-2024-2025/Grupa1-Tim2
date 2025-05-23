@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using YourRide.Data;
 using YourRide.Models;
+using YourRide.Models.ViewModels;
 
 namespace YourRide.Controllers
 {
@@ -19,6 +16,72 @@ namespace YourRide.Controllers
             _context = context;
         }
 
+        // GET: Korisnik/Registracija
+        public IActionResult Registracija()
+        {
+            return View();
+        }
+
+        // POST: Korisnik/Registracija
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registracija(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var korisnik = new Korisnik
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                VrstaRacuna = model.VrstaRacuna,
+                Dostupnost = model.VrstaRacuna == VrstaRacuna.Vozac ? Dostupnost.Zauzet : null
+            };
+
+            // Hashiraj lozinku
+            var hasher = new PasswordHasher<Korisnik>();
+            korisnik.Password = hasher.HashPassword(korisnik, model.Password);
+
+            _context.Korisnik.Add(korisnik);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+        // GET: Prijava
+        public IActionResult Prijava()
+        {
+            return View();
+        }
+
+        // POST: Prijava
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Prijava(LoginViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var korisnik = await _context.Korisnik
+    .FirstOrDefaultAsync(k => k.UserName == model.UserName);
+
+            if (korisnik == null)
+            {
+                ModelState.AddModelError(string.Empty, "Neispravno korisničko ime ili lozinka.");
+                return View(model);
+            }
+
+            var hasher = new PasswordHasher<Korisnik>();
+            var result = hasher.VerifyHashedPassword(korisnik, korisnik.Password, model.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Neispravno korisničko ime ili lozinka.");
+                return View(model);
+            }
+
+            // Prijava uspješna
+            TempData["Poruka"] = "Prijava uspješna!";
+            return RedirectToAction("Index", "Home");
+        }
         // GET: Korisnik
         public async Task<IActionResult> Index()
         {
@@ -28,17 +91,11 @@ namespace YourRide.Controllers
         // GET: Korisnik/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var korisnik = await _context.Korisnik
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (korisnik == null)
-            {
-                return NotFound();
-            }
+            if (korisnik == null) return NotFound();
 
             return View(korisnik);
         }
@@ -50,8 +107,6 @@ namespace YourRide.Controllers
         }
 
         // POST: Korisnik/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,UserName,Password,Email,VrstaRacuna,Dostupnost")] Korisnik korisnik)
@@ -68,30 +123,20 @@ namespace YourRide.Controllers
         // GET: Korisnik/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var korisnik = await _context.Korisnik.FindAsync(id);
-            if (korisnik == null)
-            {
-                return NotFound();
-            }
+            if (korisnik == null) return NotFound();
+
             return View(korisnik);
         }
 
         // POST: Korisnik/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,UserName,Password,Email,VrstaRacuna,Dostupnost")] Korisnik korisnik)
         {
-            if (id != korisnik.ID)
-            {
-                return NotFound();
-            }
+            if (id != korisnik.ID) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -102,14 +147,8 @@ namespace YourRide.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KorisnikExists(korisnik.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!KorisnikExists(korisnik.ID)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -119,17 +158,11 @@ namespace YourRide.Controllers
         // GET: Korisnik/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var korisnik = await _context.Korisnik
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (korisnik == null)
-            {
-                return NotFound();
-            }
+            if (korisnik == null) return NotFound();
 
             return View(korisnik);
         }
@@ -143,9 +176,9 @@ namespace YourRide.Controllers
             if (korisnik != null)
             {
                 _context.Korisnik.Remove(korisnik);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
