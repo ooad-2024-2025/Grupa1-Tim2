@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj": {}
+    "C:\\Users\\topca\\OneDrive\\Desktop\\YourRide\\YourRide\\YourRide\\YourRide.csproj": {}
   },
   "projects": {
-    "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj": {
+    "C:\\Users\\topca\\OneDrive\\Desktop\\YourRide\\YourRide\\YourRide\\YourRide.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj",
+        "projectUniqueName": "C:\\Users\\topca\\OneDrive\\Desktop\\YourRide\\YourRide\\YourRide\\YourRide.csproj",
         "projectName": "YourRide",
-        "projectPath": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\YourRide.csproj",
-        "packagesPath": "C:\\Users\\irmal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\irmal\\Source\\Repos\\Grupa1-Tim2\\YourRide\\YourRide\\obj\\",
+        "projectPath": "C:\\Users\\topca\\OneDrive\\Desktop\\YourRide\\YourRide\\YourRide\\YourRide.csproj",
+        "packagesPath": "C:\\Users\\topca\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\topca\\OneDrive\\Desktop\\YourRide\\YourRide\\YourRide\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\irmal\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\topca\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -69,6 +69,10 @@
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[8.0.14, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.7, )"
             }
           },
           "imports": [
@@ -90,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
