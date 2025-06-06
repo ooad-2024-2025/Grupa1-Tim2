@@ -4,7 +4,7 @@ using YourRide.Models;
 
 namespace YourRide.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Korisnik>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -12,7 +12,7 @@ namespace YourRide.Data
 
         }
 
-        public DbSet<Korisnik> Korisnik { get; set; }
+        
         
         public DbSet<Voznja> Voznja { get; set; }
         public DbSet<Notifikacija> Notifikacija { get; set; }
@@ -22,7 +22,7 @@ namespace YourRide.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
+            modelBuilder.Entity<Korisnik>().ToTable("AspNetUsers");
             modelBuilder.Entity<Voznja>().ToTable("Voznja");
             modelBuilder.Entity<Notifikacija>().ToTable("Notifikacija");
             modelBuilder.Entity<Lokacija>().ToTable("Lokacija");

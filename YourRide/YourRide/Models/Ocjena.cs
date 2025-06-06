@@ -11,7 +11,7 @@ namespace YourRide.Models
         public string komentar { get; set; }
 
         [ForeignKey("Korisnik")]
-        public int KorisnikId { get; set; }
+        public string KorisnikId { get; set; }
 
         public Korisnik Korisnik { get; set; }
         public Ocjena() { }

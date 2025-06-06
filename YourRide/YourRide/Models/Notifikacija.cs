@@ -15,11 +15,11 @@ namespace YourRide.Models
         bool procitano { get; set; } = false;
 
         [ForeignKey("Posiljalac")]
-        public int PosiljalacId { get; set; }
+        public string PosiljalacId { get; set; }
         public Korisnik Posiljalac { get; set; }
 
         [ForeignKey("Primalac")]
-        public int PrimalacId { get; set; }
+        public string PrimalacId { get; set; }
         public Korisnik Primalac { get; set; }
 
         public Notifikacija() { }

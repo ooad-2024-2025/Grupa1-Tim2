@@ -11,11 +11,11 @@ namespace YourRide.Models
         public Status status { get; set; }
 
         [ForeignKey("Putnik")]
-        public int PutnikId { get; set; }
+        public string PutnikId { get; set; }
         public Korisnik Putnik { get; set; }
 
         [ForeignKey("Vozac")]
-        public int VozacId { get; set; }
+        public string VozacId { get; set; }
         public Korisnik Vozac { get; set; }
 
         [ForeignKey("Ruta")]

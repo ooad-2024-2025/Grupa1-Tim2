@@ -1,0 +1,71 @@
+﻿@model IEnumerable<YourRide.Models.Voznja>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Putnik)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vozac)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ruta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VrijemePocetka)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VrijemeZavrsetka)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cijena)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Putnik.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vozac.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ruta.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VrijemePocetka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VrijemeZavrsetka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cijena)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace YourRide.Models
 {
-    public class Korisnik
+    public class Korisnik:IdentityUser
     {
-        [Key]
-        public int ID { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public VrstaRacuna VrstaRacuna { get; set; }
-        public Dostupnost? Dostupnost { get; set; }
+       
+       public Dostupnost? Dostupnost { get; set; }
+
         public Korisnik() { }
 
 

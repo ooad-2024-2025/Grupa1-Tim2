@@ -1,0 +1,56 @@
+﻿@page
+@model YourRide.Areas.Identity.Pages.Account.LoginModel
+
+@{
+    ViewData["Title"] = "Prijava";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <section>
+            <form id="account" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.UserName" class="form-control" placeholder="Korisničko ime" autocomplete="username" />
+                    <label asp-for="Input.UserName">Korisničko ime</label>
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" placeholder="Lozinka" autocomplete="current-password" />
+                    <label asp-for="Input.Password">Lozinka</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    <label class="form-check-label" asp-for="Input.RememberMe">
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div>
+
+                <div class="d-grid">
+                    <button id="login-submit" type="submit" class="btn text-white" style="background-color: #2d7c85;">Prijavi se</button>
+                </div>
+              
+                <hr />
+
+                <div class="text-center">
+                    <p>
+                        <a asp-page="./ForgotPassword">Zaboravljena lozinka?</a>
+                    </p>
+                    <p>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Nemaš nalog? Registruj se</a>
+                    </p>
+                    
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
