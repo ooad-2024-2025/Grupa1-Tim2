@@ -1,8 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Početna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link rel="stylesheet" href="~/css/style.css" />
+
+<div class="main-container">
+    <div class="sidebar">
+        <ul>
+            <li><i class="fas fa-car"></i> Vožnje</li>
+            <li><i class="fas fa-user"></i> <a asp-controller="Profile" asp-action="Index">Profil</a></li>
+            <li><i class="fas fa-headset"></i> Podrška</li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="welcome-card">
+            <img src="~/images/car.png" alt="Auto" class="car-icon" />
+            <h1>YourRide</h1>
+            <p>Uživajte u vožnji sa nama!</p>
+            <button class="start-button">Započni</button>
+        </div>
+    </div>
 </div>
+

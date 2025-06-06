@@ -1,0 +1,93 @@
+﻿body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #2a9d8f;
+    color: white;
+    width: 200px;
+    padding: 30px 20px;
+}
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar li {
+        margin: 20px 0;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.welcome-card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+    .welcome-card h1 {
+        color: #2a9d8f;
+        font-size: 36px;
+        margin-top: 20px;
+    }
+
+    .welcome-card p {
+        color: #2a9d8f;
+        font-size: 18px;
+    }
+
+.start-button {
+    margin-top: 25px;
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #2a9d8f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .start-button:hover {
+        background-color: #21867a;
+    }
+
+.car-icon {
+    width: 100px;
+}
+.nav-link.profile-link {
+    background-color: #28a745; /* zelena */
+    color: white !important;
+    border-radius: 8px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+    .nav-link.profile-link:hover {
+        background-color: #218838;
+        text-decoration: none;
+    }
+

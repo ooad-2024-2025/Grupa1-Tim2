@@ -1,0 +1,71 @@
+﻿@model YourRide.Models.Korisnik
+
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<style>
+    body {
+        background-color: #e0f5e9;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .profile-wrapper {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0, 128, 0, 0.15);
+    }
+
+    .profile-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 25px;
+    }
+
+    .profile-card p {
+        font-size: 18px;
+        margin: 12px 0;
+    }
+
+    .profile-card strong {
+        color: #1b5e20;
+    }
+
+    .btn-back {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+        .btn-back a {
+            background-color: #2e7d32;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+            .btn-back a:hover {
+                background-color: #1b5e20;
+            }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-title">👤 Profil korisnika</div>
+
+    <div class="profile-card">
+        <p><strong>Korisničko ime:</strong> @Model.UserName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+       
+        <p><strong>ID korisnika:</strong> @Model.Id</p>
+    </div>
+
+    <div class="btn-back">
+        <a href="/Home/Index">⬅️ Nazad na početnu</a>
+    </div>
+</div>
