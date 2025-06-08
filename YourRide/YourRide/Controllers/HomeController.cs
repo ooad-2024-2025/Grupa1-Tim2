@@ -24,6 +24,13 @@ namespace YourRide.Controllers
             return View();
         }
 
+        public IActionResult PrikazSlobodnihVozaca()
+        {
+            ViewData["HideFooter"] = true;
+            ViewData["HideHeader"] = true;
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

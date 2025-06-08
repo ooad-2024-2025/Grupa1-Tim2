@@ -18,8 +18,11 @@
             <img src="~/images/car.png" alt="Auto" class="car-icon" />
             <h1>YourRide</h1>
             <p>Uživajte u vožnji sa nama!</p>
-            <button class="start-button">Započni</button>
+
+            <!-- Dugme vodi na akciju PrikazSlobodnihVozaca -->
+            <button class="start-button" onclick="location.href='@Url.Action("PrikazSlobodnihVozaca", "Home")'">
+                Započni
+            </button>
         </div>
     </div>
 </div>
-

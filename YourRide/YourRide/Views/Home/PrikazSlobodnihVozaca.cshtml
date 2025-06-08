@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Pronađi vozače";
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #d4f4dd;
+        margin: 20px;
+    }
+
+    #map {
+        height: 400px;
+        width: 70%;
+        float: left;
+        border-radius: 10px;
+        margin-top: 20px;
+        background-color: white;
+    }
+
+    #driver-list {
+        width: 28%;
+        float: right;
+        padding-left: 2%;
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .driver-item {
+        background-color: #f8f8f8;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    #location-container {
+        background-color: #b8e4bb;
+        padding: 20px 25px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: inline-block;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    #locationInput {
+        width: 300px;
+        padding: 8px;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+
+    
+    #findBtn, #locateBtn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: inherit;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    #findBtn {
+        background-color: #3498db;
+    }
+
+        #findBtn:hover {
+            background-color: #2980b9;
+        }
+
+   
+    #locateBtn {
+        background-color: #7f8c8d;
+    }
+
+        #locateBtn:hover {
+            background-color: #636e72;
+        }
+</style>
+
+<h2>Unesite svoju lokaciju</h2>
+<div id="location-container" style="margin-bottom: 10px;">
+    <input type="text" id="locationInput" placeholder="npr. Pofalici" />
+    <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
+    <button id="locateBtn" type="button">Pronađi moju lokaciju</button>
+</div>
+
+<div>
+    <div id="map"></div>
+    <div id="driver-list"><h3>Vozači u blizini</h3></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map;
+    let userMarker;
+    let driverMarkers = [];
+
+    const drivers = [
+        { name: "Vozač Ilidža 1", lat: 43.8275, lng: 18.3207 },
+        { name: "Vozač Ilidža 2", lat: 43.8250, lng: 18.3150 },
+        { name: "Vozač Alipašino Polje 1", lat: 43.8597, lng: 18.3840 },
+        { name: "Vozač Alipašino Polje 2", lat: 43.8570, lng: 18.3800 }
+    ];
+
+    function PrikazSlobodnihVozaca() {
+        const location = document.getElementById("locationInput").value.trim();
+
+        if (!location) {
+            alert("Molimo unesite lokaciju.");
+            return;
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    alert("Lokacija nije pronađena.");
+                    return;
+                }
+
+                const lat = parseFloat(data[0].lat);
+                const lng = parseFloat(data[0].lon);
+
+                if (!map) {
+                    map = L.map('map').setView([lat, lng], 14);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+                } else {
+                    map.setView([lat, lng], 14);
+                }
+
+                if (userMarker) {
+                    userMarker.setLatLng([lat, lng]);
+                } else {
+                    userMarker = L.marker([lat, lng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
+                }
+
+                showNearbyDrivers(lat, lng);
+            })
+            .catch(() => {
+                alert("Greška prilikom pretrage lokacije.");
+            });
+    }
+
+    function showNearbyDrivers(userLat, userLng) {
+        const list = document.getElementById("driver-list");
+        list.innerHTML = "<h3>Vozači u blizini</h3>";
+
+        driverMarkers.forEach(m => map.removeLayer(m));
+        driverMarkers = [];
+
+        drivers.forEach(driver => {
+            const distance = getDistance(userLat, userLng, driver.lat, driver.lng);
+            if (distance <= 5) {
+                const marker = L.marker([driver.lat, driver.lng]).addTo(map).bindPopup(driver.name);
+                driverMarkers.push(marker);
+
+                const item = document.createElement("div");
+                item.className = "driver-item";
+                item.innerText = `${driver.name} (${distance.toFixed(2)} km)`;
+                list.appendChild(item);
+            }
+        });
+
+        if (driverMarkers.length === 0) {
+            list.innerHTML += "<p>Nema vozača u blizini.</p>";
+        }
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) *
+            Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    document.getElementById("locateBtn").addEventListener("click", () => {
+        if (!navigator.geolocation) {
+            alert("Geolokacija nije podržana u vašem pregledniku.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            if (!map) {
+                map = L.map('map').setView([lat, lng], 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+            } else {
+                map.setView([lat, lng], 14);
+            }
+
+            if (userMarker) {
+                userMarker.setLatLng([lat, lng]);
+            } else {
+                userMarker = L.marker([lat, lng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
+            }
+
+            showNearbyDrivers(lat, lng);
+        }, error => {
+            alert("Nije moguće odrediti vašu lokaciju: " + error.message);
+        });
+    });
+</script>
