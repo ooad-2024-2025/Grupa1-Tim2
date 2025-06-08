@@ -1,0 +1,58 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.log
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio folders
+.vs/
+.vscode/
+
+## Rider folders
+.idea/
+
+## NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ASP.NET
+project.lock.json
+project.fragment.lock.json
+**/wwwroot/lib/
+
+## dotCover
+*.dcvr
+
+## Backup & Report files
+*.orig
+*.bak
+*.tmp
+*.tmp.*
+
+## Others
+_ReSharper*/
+*.DotSettings.user
+*.dbmdl
+*.jfm
+*.cache
+*.sdf
+*.VC.db
+*.pdb
+*.exe
+*.dll
+
+## macOS / Linux
+.DS_Store
+*.swp
