@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using YourRide.Data;
+using YourRide.Models;
 
 namespace YourRide.Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using YourRide.Models;
-
     [Authorize]
     public class ProfileController : Controller
     {
@@ -27,7 +24,30 @@ namespace YourRide.Controllers
 
             return View(user);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDriverProfile(bool dostupnost, double latitude, double longitude)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+
+            user.Dostupnost = dostupnost ? Dostupnost.Dostupan : Dostupnost.Zauzet;
+            user.Latitude = latitude;
+            user.Longitude = longitude;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                
+                return RedirectToAction("Index");
+            }
+
+            
+            ModelState.AddModelError("", "Failed to update user profile");
+            return View("Index", user);
+        }
     }
-
-
 }

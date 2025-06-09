@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -80,7 +76,7 @@ namespace YourRide.Areas.Identity.Pages.Account
             [StringLength(20, MinimumLength = 3, ErrorMessage = "Korisničko ime mora imati između 3 i 20 znakova.")]
             [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Korisničko ime smije sadržavati samo slova i brojeve.")]
             [Display(Name = "Korisničko ime")]
-            public string UserName { get; set; } 
+            public string UserName { get; set; }
 
             [Required]
             [EmailAddress]
@@ -107,7 +103,7 @@ namespace YourRide.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
 
-            
+
         }
 
 
@@ -165,16 +161,16 @@ namespace YourRide.Areas.Identity.Pages.Account
         }
 
         private Korisnik CreateUser()
-        { 
-            
-                return new Korisnik
-                {
-                    // Ili preuzmi iz forme kasnije ako želiš fleksibilno
-                    Dostupnost = null // Ili null ako je ne želiš odmah postaviti
-                };
+        {
+
+            return new Korisnik
+            {
+                // Ili preuzmi iz forme kasnije ako želiš fleksibilno
+                Dostupnost = null // Ili null ako je ne želiš odmah postaviti
+            };
 
 
-           
+
         }
 
         private IUserEmailStore<Korisnik> GetEmailStore()

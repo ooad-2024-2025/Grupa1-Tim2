@@ -53,6 +53,50 @@
             .btn-back a:hover {
                 background-color: #1b5e20;
             }
+
+    /* Map container */
+    #map {
+        height: 300px;
+        margin-top: 15px;
+        /* Initially display block if coords exist, or none */
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+    .btn-primary, .btn-secondary {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #2e7d32;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #1b5e20;
+        }
+
+    .btn-secondary {
+        background-color: #7f8c8d;
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #636e72;
+        }
 </style>
 
 <div class="profile-wrapper">
@@ -61,11 +105,144 @@
     <div class="profile-card">
         <p><strong>Korisničko ime:</strong> @Model.UserName</p>
         <p><strong>Email:</strong> @Model.Email</p>
-       
         <p><strong>ID korisnika:</strong> @Model.Id</p>
     </div>
+
+    @if (User.IsInRole("Vozac"))
+    {
+        <div>
+            <h3>Postavite svoju dostupnost i lokaciju</h3>
+            <form method="post" asp-action="UpdateDriverProfile">
+                <div class="form-group">
+                    <label for="Dostupnost">Dostupnost</label>
+                    <input type="checkbox" id="Dostupnost" name="Dostupnost" @(Model.Dostupnost == Dostupnost.Dostupan ? "checked" : "") />
+                </div>
+
+                <div class="form-group">
+                    <label for="locationSearchInput">Pretražite lokaciju:</label>
+                    <input type="text" id="locationSearchInput" class="form-control" placeholder="npr. Pofalici" />
+                    <button type="button" class="btn btn-secondary" onclick="searchLocation()">📍 Pretraži i postavi lokaciju</button>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="getLocation()">📌 Postavi moju trenutnu lokaciju</button>
+
+                <div id="map" style="@(Model.Latitude.HasValue && Model.Longitude.HasValue ? "display: block;" : "display: none;")"></div>
+
+
+                <input type="hidden" id="Latitude" name="latitude" value="@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+                <input type="hidden" id="Longitude" name="longitude" value="@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+
+                <button type="submit" class="btn btn-primary" style="margin-top:15px;">Spremi</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        
+    }
 
     <div class="btn-back">
         <a href="/Home/Index">⬅️ Nazad na početnu</a>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let map, marker;
+    let initialLat = parseFloat(document.getElementById("Latitude").value) || 0;
+    let initialLon = parseFloat(document.getElementById("Longitude").value) || 0;
+
+    if (initialLat !== 0 || initialLon !== 0) {
+        showMap(initialLat, initialLon);
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                updateLocationAndMap(lat, lon);
+            }, function (error) {
+                alert("Ne možemo pristupiti vašoj lokaciji: " + error.message);
+            });
+        } else {
+            alert("Preglednik ne podržava geolokaciju.");
+        }
+    }
+
+    function searchLocation() {
+        const locationName = document.getElementById("locationSearchInput").value.trim();
+        if (!locationName) {
+            alert("Molimo unesite lokaciju za pretragu.");
+            return;
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length === 0) {
+                    alert("Lokacija nije pronađena.");
+                    return;
+                }
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                updateLocationAndMap(lat, lon);
+            })
+            .catch(error => {
+                console.error('Error fetching location:', error);
+                alert("Greška prilikom pretrage lokacije.");
+            });
+    }
+
+    function updateLocationAndMap(lat, lon) {
+        // Validate coordinates before setting
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            alert("Koordinate nisu u ispravnom opsegu! Molimo odaberite validnu lokaciju.");
+            return false;
+        }
+
+        document.getElementById("Latitude").value = lat.toFixed(7); // Up to 7 decimal places for precision
+        document.getElementById("Longitude").value = lon.toFixed(7);
+
+        showMap(lat, lon);
+    }
+
+    function showMap(lat, lon) {
+        document.getElementById("map").style.display = "block";
+
+        if (!map) {
+            map = L.map('map').setView([lat, lon], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap doprinosioci'
+            }).addTo(map);
+
+            marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+        } else {
+            map.setView([lat, lon], 15);
+            marker.setLatLng([lat, lon]);
+        }
+
+        map.on('click', function (e) {
+            const clickedLat = e.latlng.lat;
+            const clickedLon = e.latlng.lng;
+            marker.setLatLng([clickedLat, clickedLon]);
+            document.getElementById("Latitude").value = clickedLat.toFixed(7);
+            document.getElementById("Longitude").value = clickedLon.toFixed(7);
+        });
+
+        marker.on('moveend', function (e) { 
+            const newLat = marker.getLatLng().lat;
+            const newLon = marker.getLatLng().lng;
+            document.getElementById("Latitude").value = newLat.toFixed(7);
+            document.getElementById("Longitude").value = newLon.toFixed(7);
+        });
+    }
+</script>
