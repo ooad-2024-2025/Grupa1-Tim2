@@ -2,7 +2,8 @@
 {
     public enum Dostupnost
     {
-        Dostupan,
-        Zauzet
+        Zauzet,
+        Dostupan
+        
     }
 }
