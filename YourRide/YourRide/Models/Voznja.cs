@@ -25,7 +25,7 @@ namespace YourRide.Models
         public DateTime VrijemePocetka { get; set; }
         public DateTime? VrijemeZavrsetka { get; set; }
 
-        public decimal Cijena { get; set; }
+       
         public Voznja() { }
     }
 }

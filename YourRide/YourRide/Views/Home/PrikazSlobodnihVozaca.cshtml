@@ -104,7 +104,8 @@
 <h2>Unesite svoju lokaciju</h2>
 <div id="location-container">
     <input type="text" id="locationInput" placeholder="npr. Pofalići" />
-    <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
+    <input type="text" id="destinationInput" placeholder="npr. Baščaršija (Odredišna Adresa - opcionalno)" />
+   <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
     <button id="locateBtn" type="button">Pronađi moju lokaciju</button>
 </div>
 
@@ -122,6 +123,8 @@
 
     async function PrikazSlobodnihVozaca() {
         const location = document.getElementById("locationInput").value.trim();
+
+
 
         if (!location) {
             alert("Molimo unesite lokaciju.");
@@ -193,7 +196,7 @@
                 item.className = "driver-item";
                 item.innerHTML = `
                     <strong>${driver.name}</strong> (${distance.toFixed(2)} km)<br/>
-                    <button class="order-button" onclick="naruciVoznju('${driver.name}')">Naruči vožnju</button>
+                    <button class="order-button" onclick="naruciVoznju('${driver.id}', '${driver.name}')">Naruči vožnju</button>
                 `;
                 list.appendChild(item);
             }
@@ -215,9 +218,62 @@
         return R * c;
     }
 
-    function naruciVoznju(vozacIme) {
-        alert(`Uspješno ste naručili vožnju kod vozača: ${vozacIme}`);
-        // zasaddd 
+    // Glavna funkcija za naručivanje vožnje (Ažurirana za slanje zahtjeva kontroleru)
+    async function naruciVoznju(driverId, driverName) {
+
+        console.log("Pozvana funkcija naruciVoznju."); // DODAJ OVU LINIJU
+    console.log("Driver ID:", driverId); // DODAJ OVU LINIJU
+    console.log("Driver Name:", driverName); // DODAJ OVU LINIJU
+        const pocetnaAdresa = document.getElementById("locationInput").value.trim();
+        const odredisnaAdresa = document.getElementById("destinationInput").value.trim(); // Dohvati odredišnu adresu
+
+        if (!pocetnaAdresa) {
+            alert("Molimo unesite početnu adresu.");
+            return;
+        }
+
+        // Dohvati ID trenutno logiranog korisnika (putnika)
+        // @(User.Identity.IsAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value : string.Empty)
+        // Ovaj dio Blade sintakse će biti renderovan na serveru u stvarni putnikId string
+        const putnikId = "@(User.Identity.IsAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value : string.Empty)";
+
+        if (!putnikId) {
+            alert("Korisnik nije prijavljen. Ne možete naručiti vožnju.");
+            return;
+        }
+
+        const requestData = {
+            DriverId: driverId,
+            PutnikId: putnikId,
+            PocetnaAdresa: pocetnaAdresa,
+            // Ako je odredisnaAdresa prazan string, pošalji null, inače pošalji vrijednost
+            OdredisnaAdresa: odredisnaAdresa === "" ? null : odredisnaAdresa
+        };
+
+        try {
+            // Slanje POST zahtjeva na Naruci akciju u VoznjaControlleru
+            const response = await fetch('/Voznja/Naruci', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Dodavanje anti-forgery tokena za sigurnost (ako ga koristiš na serveru)
+                    'RequestVerificationToken': '@Html.AntiForgeryToken()'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(`Uspješno ste naručili vožnju kod vozača: ${driverName}. Status: ${result.status}`);
+                // Ovdje možete dodati daljnju logiku, npr. osvježiti listu vozača, preusmjeriti korisnika itd.
+            } else {
+                const errorData = await response.json();
+                alert(`Greška prilikom naručivanja vožnje: ${errorData.message || response.statusText}`);
+            }
+        } catch (error) {
+            console.error("Greška prilikom slanja zahtjeva:", error);
+            alert("Došlo je do greške prilikom naručivanja vožnje.");
+        }
     }
 
     document.getElementById("locateBtn").addEventListener("click", () => {

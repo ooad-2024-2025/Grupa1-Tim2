@@ -148,26 +148,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Ruta/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxDcmVhdGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Ruta/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxEZWxldGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Ruta/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxEZXRhaWxzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Ruta/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxFZGl0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Ruta/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxJbmRleC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -178,6 +158,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Vozac2/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm96YWMyXERhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/topca/OneDrive/Desktop/YourRide/YourRide/YourRide/Views/Voznja/Create.cshtml]

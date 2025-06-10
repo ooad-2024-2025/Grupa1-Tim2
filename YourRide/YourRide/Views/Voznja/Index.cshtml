@@ -30,9 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.VrijemeZavrsetka)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cijena)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -57,9 +55,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.VrijemeZavrsetka)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cijena)
-            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |

@@ -1,0 +1,167 @@
+﻿@model List<YourRide.Models.Voznja>
+@{
+    ViewData["Title"] = "Vozačev Dashboard";
+}
+
+<h1>Vozačev Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Dobrodošli, <span class="text-primary">@User.Identity.Name</span>!</h2>
+        <p>Ovdje možete upravljati svojim vožnjama i primati nove zahtjeve.</p>
+
+        <h3>
+            Status Vaše Dostupnosti:
+            <span id="vozacDostupnost" class="badge bg-secondary">
+                @(ViewBag.DostupnostStatus ?? "Nepoznato")
+            </span>
+        </h3>
+        @* Možeš dodati dugme za ručnu promjenu dostupnosti kasnije, ako želiš *
+        @* <button id="toggleDostupnost" class="btn btn-info">Promijeni Dostupnost</button>
+        <small class="text-muted"> (Funkcionalnost za promjenu dostupnosti još nije implementirana) </small> *@
+    </div>
+    <div class="col-md-6">
+        <h3>Novi Zahtjevi za Vožnju</h3>
+        <div class="card">
+            <div class="card-body">
+                <ul id="rideRequestsList" class="list-group">
+                    <li class="list-group-item text-muted">Nema aktivnih zahtjeva za vožnju.</li>
+                </ul>
+            </div>
+        </div>
+        <input type="hidden" id="requestVerificationToken"
+               name="__RequestVerificationToken"
+               value="@Html.AntiForgeryToken()" />
+    </div>
+</div>
+
+<hr />
+
+<h2>Vaše Aktivne Vožnje</h2>
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Vožnje</th>
+                <th>Putnik</th>
+                <th>Početna Lokacija</th>
+                <th>Krajnja Lokacija</th>
+                <th>Status</th>
+                <th>Vrijeme Početka</th>
+                <th>Akcije</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voznja in Model)
+            {
+                <tr>
+                    <td>@voznja.ID</td>
+                    <td>@voznja.Putnik?.UserName</td>
+                    <td>@voznja.Ruta?.PocetnaLokacija?.Naziv</td>
+                    <td>@(voznja.Ruta?.KrajnjaLokacija?.Naziv ?? "N/A")</td>
+                    <td>@voznja.status.ToString()</td>
+                    <td>@voznja.VrijemePocetka.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="window.location.href='/Voznja/Detalji/@voznja.ID'">Detalji</button>
+                        @if (voznja.status == YourRide.Models.Status.Prihvacena) // Dugme vidljivo samo za prihvaćene vožnje
+                        {
+                            <button class="btn btn-sm btn-success" onclick="zavrsiVoznju('@voznja.ID')">Završi Vožnju</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="alert alert-info">Trenutno nemate aktivnih vožnji.</p>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        const isDriver = @(User.IsInRole("Vozac") ? "true" : "false");
+        const antiForgeryToken = document.getElementById('requestVerificationToken').value; // Dohvati token
+
+        if (isDriver) {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveRideRequest", (rideRequestData) => {
+                console.log("Primljen zahtjev za vožnju:", rideRequestData);
+
+                const rideRequestsList = document.getElementById('rideRequestsList');
+                if (rideRequestsList.children.length === 1 && rideRequestsList.children[0].classList.contains('text-muted')) {
+                    rideRequestsList.innerHTML = '';
+                }
+
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item list-group-item-action list-group-item-warning mb-2';
+                listItem.innerHTML = `
+                    <h5>Novi zahtjev od: ${rideRequestData.PutnikUserName}</h5>
+                    <p><strong>Početna lokacija:</strong> ${rideRequestData.PocetnaAdresa}</p>
+                    <p><strong>Odredišna lokacija:</strong> ${rideRequestData.OdredisnaAdresa}</p>
+                `;
+                rideRequestsList.prepend(listItem);
+
+                alert(`Novi zahtjev za vožnju od ${rideRequestData.PutnikUserName}!`);
+                location.reload(); // Osvježi stranicu da se vožnja pojavi u aktivnim
+            });
+
+
+            // Funkcija za slanje zahtjeva za završetak vožnje
+            async function zavrsiVoznju(voznjaId) {
+                console.log('Završavam vožnju ID:', voznjaId);
+                if (!confirm('Jeste li sigurni da želite završiti ovu vožnju?')) {
+                    return; // Prekini ako korisnik otkaže
+                }
+
+                try {
+                    const response = await fetch('/Vozac2/ZavrsiVoznju', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': antiForgeryToken // Dodaj anti-forgery token
+                        },
+                        body: JSON.stringify(parseInt(voznjaId)) // Šaljemo samo ID vožnje kao int
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert(result.message);
+                        // Osvježi status dostupnosti vozača na UI-u
+                        document.getElementById('vozacDostupnost').textContent = 'Dostupan';
+                        // Osvježi listu aktivnih vožnji (ili jednostavno reloadaj stranicu)
+                        location.reload();
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Greška pri završetku vožnje: ${errorData.message}`);
+                    }
+                } catch (error) {
+                    console.error('Greška prilikom slanja zahtjeva za završetak vožnje:', error);
+                    alert('Došlo je do greške prilikom završetka vožnje.');
+                }
+            }
+
+            // Globalno dostupna funkcija
+            window.zavrsiVoznju = zavrsiVoznju;
+
+
+            async function startSignalRConnection() {
+                try {
+                    await connection.start();
+                    console.log("SignalR Connected for Driver.");
+                } catch (err) {
+                    console.error("SignalR Connection Error: ", err);
+                }
+            }
+
+            connection.onclose(startSignalRConnection);
+            startSignalRConnection();
+        }
+    </script>
+}

@@ -19,7 +19,10 @@
                 @Html.DisplayNameFor(model => model.Naziv)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Udaljenost)
+                @Html.DisplayNameFor(model => model.Latituda)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longituda)
             </th>
             <th></th>
         </tr>
@@ -34,16 +37,15 @@
                 @Html.DisplayFor(modelItem => item.Naziv)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Udaljenost)
+                @Html.DisplayFor(modelItem => item.Latituda)
             </td>
             <td>
-                    @if (User.IsInRole("Administrator"))
-                    {
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
-              
+                @Html.DisplayFor(modelItem => item.Longituda)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
             </td>
         </tr>
 }

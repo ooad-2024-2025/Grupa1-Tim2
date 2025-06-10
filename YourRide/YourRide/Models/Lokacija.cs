@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime;
 
 namespace YourRide.Models
 {
@@ -9,9 +10,10 @@ namespace YourRide.Models
         public String Grad { get; set; }
         public String Naziv { get; set; }
 
-        public double Udaljenost { get; set; }
+        public double? Latituda {get;set;}
+    public double? Longituda {get;set;}
 
 
-        public Lokacija() { }
+public Lokacija() { }
     }
 }

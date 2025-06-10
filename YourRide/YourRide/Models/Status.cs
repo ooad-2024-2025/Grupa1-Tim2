@@ -3,6 +3,9 @@
     public enum Status
     {
         uToku,
-        Zavrsena
+        Zavrsena,
+        naCekanju,
+        Odbijena,
+        Prihvacena
     }
 }

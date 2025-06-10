@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourRide.Data;
 
@@ -11,9 +12,11 @@ using YourRide.Data;
 namespace YourRide.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610142330_cijenauklonjena")]
+    partial class cijenauklonjena
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -326,11 +329,17 @@ namespace YourRide.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("KrajnjaLokacijaId")
+                    b.Property<int>("KrajnjaLokacijaId")
                         .HasColumnType("int");
 
                     b.Property<int>("PocetnaLokacijaId")
                         .HasColumnType("int");
+
+                    b.Property<double>("TrajanjeMinuta")
+                        .HasColumnType("float");
+
+                    b.Property<double>("UdaljenostKm")
+                        .HasColumnType("float");
 
                     b.HasKey("ID");
 
@@ -466,7 +475,8 @@ namespace YourRide.Migrations
                     b.HasOne("YourRide.Models.Lokacija", "KrajnjaLokacija")
                         .WithMany()
                         .HasForeignKey("KrajnjaLokacijaId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("YourRide.Models.Lokacija", "PocetnaLokacija")
                         .WithMany()

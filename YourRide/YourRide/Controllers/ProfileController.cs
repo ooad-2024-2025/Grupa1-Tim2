@@ -33,19 +33,22 @@ namespace YourRide.Controllers
             if (user == null)
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
 
-            user.Dostupnost = dostupnost ? Dostupnost.Dostupan : Dostupnost.Zauzet;
-            user.Latitude = latitude;
-            user.Longitude = longitude;
+            double lat = Math.Round(latitude / 1_000_0000.0, 4);
+            double lon = Math.Round(longitude / 1_000_0000.0, 4);
+
+            user.Dostupnost = dostupnost ? Dostupnost.Zauzet : Dostupnost.Dostupan;
+            user.Latitude = lat;
+            user.Longitude = lon;
 
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
-                
+
                 return RedirectToAction("Index");
             }
 
-            
+
             ModelState.AddModelError("", "Failed to update user profile");
             return View("Index", user);
         }

@@ -54,9 +54,7 @@ namespace YourRide.Data
                 .HasForeignKey(v => v.VozacId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Voznja>()
-    .Property(v => v.Cijena)
-    .HasPrecision(10, 2);
+
 
             modelBuilder.Entity<Notifikacija>()
         .HasOne(n => n.Posiljalac)

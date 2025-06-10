@@ -43,7 +43,7 @@ public class VozacController : Controller
            
             vozaciLista.Add(new
             {
-
+                id=vozac.Id,
                 Name = vozac.UserName,
                 Dostupnost = vozac.Dostupnost,
                 Latitude = vozac.Latitude,
