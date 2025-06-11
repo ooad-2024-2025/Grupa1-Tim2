@@ -98,5 +98,96 @@ namespace YourRide.Controllers
 
             return Ok(new { message = "Vožnja uspješno završena, status vozača promijenjen u 'Dostupan'." });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PrihvatiVoznju([FromBody] int voznjaId)
+        {
+            var voznja = await _context.Voznja
+                .Include(v => v.Putnik)
+                .FirstOrDefaultAsync(v => v.ID == voznjaId);
+
+            if (voznja == null)
+                return NotFound(new { message = "Vožnja nije pronađena." });
+
+            var currentDriver = await _userManager.GetUserAsync(User);
+
+            if (voznja.status != Status.naCekanju)
+                return BadRequest(new { message = "Vožnja nije dostupna za prihvatanje." });
+
+            // Postavljanje vozača
+            voznja.VozacId = currentDriver.Id;
+            voznja.status = Status.Prihvacena;
+            currentDriver.Dostupnost = Dostupnost.Zauzet;
+
+            _context.Voznja.Update(voznja);
+            _context.Users.Update(currentDriver);
+            await _context.SaveChangesAsync();
+
+            // Notifikacija putniku
+            if (voznja.Putnik != null)
+            {
+                await _hubContext.Clients.User(voznja.Putnik.Id).SendAsync(
+                    "VoznjaPrihvacena",
+                    new
+                    {
+                        RideId = voznja.ID,
+                        VozacUserName = currentDriver.UserName,
+                        Poruka = "Vaša vožnja je prihvaćena i vozač dolazi po vas!"
+                    });
+            }
+
+            return Ok(new { message = "Vožnja prihvaćena i vozač postavljen kao zauzet." });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OdbijVoznju([FromBody] int voznjaId)
+        {
+            var voznja = await _context.Voznja
+                .Include(v => v.Putnik)
+                .FirstOrDefaultAsync(v => v.ID == voznjaId);
+
+            if (voznja == null)
+            {
+                return NotFound(new { message = "Vožnja nije pronađena." });
+            }
+
+            var currentDriver = await _userManager.GetUserAsync(User);
+            if (voznja.VozacId != currentDriver.Id)
+            {
+                return Forbid(); // Neovlašten pristup
+            }
+
+            if (voznja.status != Status.naCekanju)
+            {
+                return BadRequest(new { message = "Vožnja se može odbiti samo dok je u statusu 'Na čekanju'." });
+            }
+
+            // Odbijanje vožnje – možeš ili obrisati vozača ili samo promijeniti status
+            voznja.VozacId = null;
+            voznja.status = Status.Odbijena;
+
+            _context.Voznja.Update(voznja);
+            await _context.SaveChangesAsync();
+
+            // Notifikacija putniku
+            if (voznja.Putnik != null)
+            {
+                await _hubContext.Clients.User(voznja.Putnik.Id).SendAsync(
+                    "VoznjaOdbijena",
+                    new
+                    {
+                        RideId = voznja.ID,
+                        Poruka = "Vozač je odbio vašu vožnju."
+                    }
+                );
+            }
+
+            return Ok(new { message = "Vožnja je odbijena i putnik je obaviješten." });
+        }
+
+
     }
 }
