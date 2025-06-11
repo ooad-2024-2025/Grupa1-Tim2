@@ -271,10 +271,7 @@ namespace YourRide.Controllers
                 _context.Voznja.Add(novaVoznja);
                 await _context.SaveChangesAsync(); // <-- VAŽNO: Spremi prije slanja, jer ti treba novaVoznja.ID
 
-                // 5. Ažuriraj status vozača
-                vozac.Dostupnost = Dostupnost.Zauzet;
-                _context.Users.Update(vozac);
-                await _context.SaveChangesAsync();
+             
 
                 // 6. ŠALJI NOTIFIKACIJU VOZAČU PUTEM SIGNALR-a
                 // Ključno: Clients.User(vozac.Id) šalje poruku samo konekcijama koje pripadaju tom korisniku
