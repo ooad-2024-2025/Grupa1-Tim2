@@ -91,26 +91,116 @@ else
                 .withAutomaticReconnect()
                 .build();
 
+            // --- SignalR Listener za nove zahtjeve za vožnju ---
             connection.on("ReceiveRideRequest", (rideRequestData) => {
                 console.log("Primljen zahtjev za vožnju:", rideRequestData);
 
                 const rideRequestsList = document.getElementById('rideRequestsList');
+                // Ukloni "Nema aktivnih zahtjeva" poruku ako postoji
                 if (rideRequestsList.children.length === 1 && rideRequestsList.children[0].classList.contains('text-muted')) {
                     rideRequestsList.innerHTML = '';
                 }
 
                 const listItem = document.createElement('li');
                 listItem.className = 'list-group-item list-group-item-action list-group-item-warning mb-2';
+                // AŽURIRANO: Dodana dugmad "Prihvati" i "Odbij"
                 listItem.innerHTML = `
                     <h5>Novi zahtjev od: ${rideRequestData.PutnikUserName}</h5>
+                    <p><strong>Vožnja ID:</strong> ${rideRequestData.RideId}</p>
                     <p><strong>Početna lokacija:</strong> ${rideRequestData.PocetnaAdresa}</p>
-                    <p><strong>Odredišna lokacija:</strong> ${rideRequestData.OdredisnaAdresa}</p>
+                    <p><strong>Odredišna lokacija:</strong> ${rideRequestData.OdredisnaAdresa ?? 'Nije navedeno'}</p>
+                    <button class="btn btn-success btn-sm me-2" onclick="prihvatiVoznju('${rideRequestData.RideId}', this)">Prihvati</button>
+                    <button class="btn btn-danger btn-sm" onclick="odbijVoznju('${rideRequestData.RideId}', this)">Odbij</button>
                 `;
-                rideRequestsList.prepend(listItem);
+                rideRequestsList.prepend(listItem); // Dodaj na vrh liste
 
                 alert(`Novi zahtjev za vožnju od ${rideRequestData.PutnikUserName}!`);
-                location.reload(); // Osvježi stranicu da se vožnja pojavi u aktivnim
+                // NE KORISTI location.reload() OVDJE! To će obrisati listu zahtjeva dok vozač ne reagira.
+                // Umjesto toga, dinamički ukloni zahtjev kada se prihvati/odbije (vidi dole).
             });
+            // --- Kraj SignalR Listenera ---
+
+
+            // --- Funkcija za prihvaćanje vožnje ---
+            async function prihvatiVoznju(voznjaId, buttonElement) {
+                console.log('Prihvaćam vožnju ID:', voznjaId);
+                if (!confirm('Jeste li sigurni da želite prihvatiti ovu vožnju?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/Vozac2/PrihvatiVoznju', { // Provjeri da li je ruta ispravna
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': antiForgeryToken
+                        },
+                        body: JSON.stringify(parseInt(voznjaId)) // Šaljemo samo ID vožnje kao int
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert(result.message);
+                        // Ukloni prihvaćeni zahtjev s liste "Novi Zahtjevi"
+                        if (buttonElement && buttonElement.parentElement) {
+                            buttonElement.parentElement.remove();
+                            // Ako nema više zahtjeva, vrati "Nema aktivnih zahtjeva" poruku
+                            const rideRequestsList = document.getElementById('rideRequestsList');
+                            if (rideRequestsList.children.length === 0) {
+                                rideRequestsList.innerHTML = '<li class="list-group-item text-muted">Nema aktivnih zahtjeva za vožnju.</li>';
+                            }
+                        }
+                        location.reload(); // Osvježi stranicu da se vožnja pojavi u "Aktivne Vožnje"
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Greška pri prihvaćanju vožnje: ${errorData.message}`);
+                    }
+                } catch (error) {
+                    console.error('Greška prilikom slanja zahtjeva za prihvaćanje vožnje:', error);
+                    alert('Došlo je do greške prilikom prihvaćanja vožnje.');
+                }
+            }
+
+            // --- Funkcija za odbijanje vožnje ---
+            async function odbijVoznju(voznjaId, buttonElement) {
+                console.log('Odbijam vožnju ID:', voznjaId);
+                if (!confirm('Jeste li sigurni da želite odbiti ovu vožnju?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/Vozac2/OdbijVoznju', { // Provjeri da li je ruta ispravna
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': antiForgeryToken
+                        },
+                        body: JSON.stringify(parseInt(voznjaId)) // Šaljemo samo ID vožnje kao int
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert(result.message);
+                        // Ukloni odbijeni zahtjev s liste "Novi Zahtjevi"
+                        if (buttonElement && buttonElement.parentElement) {
+                            buttonElement.parentElement.remove();
+                            // Ako nema više zahtjeva, vrati "Nema aktivnih zahtjeva" poruku
+                            const rideRequestsList = document.getElementById('rideRequestsList');
+                            if (rideRequestsList.children.length === 0) {
+                                rideRequestsList.innerHTML = '<li class="list-group-item text-muted">Nema aktivnih zahtjeva za vožnju.</li>';
+                            }
+                        }
+                        // Nakon odbijanja, vozač postaje dostupan, pa možeš osvježiti status (ovo radi API kontroler)
+                        // document.getElementById('vozacDostupnost').textContent = 'Dostupan'; // Ova linija nije neophodna jer će reload osvježiti
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Greška pri odbijanju vožnje: ${errorData.message}`);
+                    }
+                } catch (error) {
+                    console.error('Greška prilikom slanja zahtjeva za odbijanje vožnje:', error);
+                    alert('Došlo je do greške prilikom odbijanja vožnje.');
+                }
+            }
 
 
             // Funkcija za slanje zahtjeva za završetak vožnje
@@ -133,8 +223,8 @@ else
                     if (response.ok) {
                         const result = await response.json();
                         alert(result.message);
-                        // Osvježi status dostupnosti vozača na UI-u
-                        document.getElementById('vozacDostupnost').textContent = 'Dostupan';
+                        // Osvježi status dostupnosti vozača na UI-u (ovo radi API kontroler)
+                        // document.getElementById('vozacDostupnost').textContent = 'Dostupan'; // Ova linija nije neophodna jer će reload osvježiti
                         // Osvježi listu aktivnih vožnji (ili jednostavno reloadaj stranicu)
                         location.reload();
                     } else {
@@ -147,7 +237,9 @@ else
                 }
             }
 
-            // Globalno dostupna funkcija
+            // Postavi funkcije globalno dostupnim da bi ih onclick atributi mogli pozvati
+            window.prihvatiVoznju = prihvatiVoznju;
+            window.odbijVoznju = odbijVoznju;
             window.zavrsiVoznju = zavrsiVoznju;
 
 
@@ -157,11 +249,14 @@ else
                     console.log("SignalR Connected for Driver.");
                 } catch (err) {
                     console.error("SignalR Connection Error: ", err);
+                    setTimeout(startSignalRConnection, 5000); // Pokušaj ponovo nakon 5 sekundi
                 }
             }
 
             connection.onclose(startSignalRConnection);
             startSignalRConnection();
+        } else {
+            console.log("Korisnik nije vozač. SignalR klijent za vozača nije pokrenut.");
         }
     </script>
 }

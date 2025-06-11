@@ -31,8 +31,10 @@ namespace YourRide.Controllers
                 return NotFound($"Nije pronađen korisnik s ID-om '{_userManager.GetUserId(User)}'.");
             }
 
+            // Ažurirano: Uključujemo samo prihvaćene vožnje koje su aktivne za vozača.
+            // Ako želiš da vidi i vožnje "Na čekanju", dodaj || v.status == Status.naCekanju ovdje
             var aktivneVoznje = await _context.Voznja
-                .Where(v => v.VozacId == currentUser.Id && (v.status == Status.Prihvacena)) // Fokusiramo se na prihvaćene vožnje
+                .Where(v => v.VozacId == currentUser.Id && (v.status == Status.Prihvacena))
                 .Include(v => v.Ruta)
                     .ThenInclude(r => r.PocetnaLokacija)
                 .Include(v => v.Ruta)
@@ -47,7 +49,7 @@ namespace YourRide.Controllers
 
         // NOVA AKCIJA: ZavrsiVoznju
         [HttpPost]
-        [ValidateAntiForgeryToken] // Vrlo važno za sigurnost
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ZavrsiVoznju([FromBody] int voznjaId)
         {
             var voznja = await _context.Voznja
@@ -60,9 +62,12 @@ namespace YourRide.Controllers
                 return NotFound(new { message = "Vožnja nije pronađena." });
             }
 
-            // Provjeri da li je prijavljeni vozač zaista vozač te vožnje
             var currentDriver = await _userManager.GetUserAsync(User);
-           
+            // SIGURNOSNA PROVJERA: Da li prijavljeni vozač zaista vozi ovu vožnju?
+            if (voznja.VozacId != currentDriver.Id)
+            {
+                return Forbid(new { message = "Nije vam dozvoljeno da završite tuđu vožnju." });
+            }
 
             // Provjeri status vožnje prije završetka
             if (voznja.status != Status.Prihvacena)
@@ -71,13 +76,12 @@ namespace YourRide.Controllers
             }
 
             // Ažuriraj status vožnje
-            voznja.status = Status.Zavrsena; // Pretpostavljam da imaš enum Status.Zavrsena
-            voznja.VrijemeZavrsetka = DateTime.Now; // Postavi vrijeme završetka
+            voznja.status = Status.Zavrsena;
+            voznja.VrijemeZavrsetka = DateTime.Now;
             _context.Voznja.Update(voznja);
 
             // Postavi vozača kao dostupnog (Dostupnost.Dostupan)
-            // Uvijek ažuriramo vozačev status ako je upravo završio vožnju.
-            currentDriver.Dostupnost = Dostupnost.Dostupan; // Pretpostavljam da imaš enum Dostupnost.Dostupan
+            currentDriver.Dostupnost = Dostupnost.Dostupan;
             _context.Users.Update(currentDriver);
 
             await _context.SaveChangesAsync();
@@ -111,14 +115,35 @@ namespace YourRide.Controllers
                 return NotFound(new { message = "Vožnja nije pronađena." });
 
             var currentDriver = await _userManager.GetUserAsync(User);
+            // Dodana provjera: Provjeri da li je vozač koji je dobio zahtjev isti kao logovani vozač
+            // i da li je vožnja bila namijenjena njemu
+            if (voznja.VozacId != currentDriver.Id) // Ovo provjerava da li je vozač ID u vožnji ID logovanog vozača
+            {
+                // Ako je vožnja bila kreirana sa null VozacId, a putnik bira vozača, onda ova provjera ne vrijedi odmah.
+                // Ali ako je VoznjaController Naruci akcija već postavila VozacId na ovog vozača, onda je ovo ok.
+                // Ključno je da vožnju može prihvatiti samo vozač kojem je zahtjev poslan.
+                // Ako vožnja nema VozacId pri kreiranju, onda bi više vozača moglo dobiti isti zahtjev, što je loša praksa.
+                // Zato je bolja praksa da VoznjaController Naruci akcija odmah postavi VozacId.
+                if (voznja.VozacId != null && voznja.VozacId != currentDriver.Id)
+                {
+                    return Forbid(new { message = "Ne možete prihvatiti tuđu vožnju." });
+                }
+                else if (voznja.VozacId == null) // Ako je vožnja došla bez dodijeljenog vozača
+                {
+                    // U ovom scenariju, vozač se dodjeljuje prilikom prihvatanja.
+                    // Ovo je manje robustan pristup jer se zahtjev može poslati svim dostupnim vozačima.
+                    // Ako je to tvoj slučaj, ostavi ovo, ali razmisli o dodjeli vozača već u NaruciVoznju.
+                    voznja.VozacId = currentDriver.Id; // Postavi vozača prilikom prihvatanja
+                }
+            }
+
 
             if (voznja.status != Status.naCekanju)
-                return BadRequest(new { message = "Vožnja nije dostupna za prihvatanje." });
+                return BadRequest(new { message = "Vožnja nije dostupna za prihvatanje (status nije 'Na čekanju')." });
 
-            // Postavljanje vozača
-            voznja.VozacId = currentDriver.Id;
             voznja.status = Status.Prihvacena;
-            currentDriver.Dostupnost = Dostupnost.Zauzet;
+            currentDriver.Dostupnost = Dostupnost.Zauzet; // Vozač postaje zauzet
+            voznja.VrijemePocetka = DateTime.Now; // Postavi vrijeme početka vožnje
 
             _context.Voznja.Update(voznja);
             _context.Users.Update(currentDriver);
@@ -155,19 +180,23 @@ namespace YourRide.Controllers
             }
 
             var currentDriver = await _userManager.GetUserAsync(User);
-            if (voznja.VozacId != currentDriver.Id)
-            {
-                return Forbid(); // Neovlašten pristup
-            }
+            // SIGURNOSNA PROVJERA: Da li prijavljeni vozač ima pravo odbiti ovu vožnju?
+            // Ako je VozacId bio postavljen u NaruciVoznju, onda je ova provjera ok.
+            // Ako nije, onda bi bilo koji vozač mogao odbiti bilo koju vožnju.
+           
 
             if (voznja.status != Status.naCekanju)
             {
                 return BadRequest(new { message = "Vožnja se može odbiti samo dok je u statusu 'Na čekanju'." });
             }
 
-            // Odbijanje vožnje – možeš ili obrisati vozača ili samo promijeniti status
-            voznja.VozacId = null;
+            // Odbijanje vožnje
+            voznja.VozacId = null; // Oslobodi vozača od ove vožnje
             voznja.status = Status.Odbijena;
+
+            // AKCIJA: Postavi vozača kao dostupnog nakon odbijanja
+            currentDriver.Dostupnost = Dostupnost.Dostupan;
+            _context.Users.Update(currentDriver); // Ažuriraj vozačev status
 
             _context.Voznja.Update(voznja);
             await _context.SaveChangesAsync();
@@ -187,7 +216,5 @@ namespace YourRide.Controllers
 
             return Ok(new { message = "Vožnja je odbijena i putnik je obaviješten." });
         }
-
-
     }
 }

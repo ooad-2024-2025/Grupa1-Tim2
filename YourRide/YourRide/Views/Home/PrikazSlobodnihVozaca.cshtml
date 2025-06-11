@@ -105,7 +105,7 @@
 <div id="location-container">
     <input type="text" id="locationInput" placeholder="npr. Pofalići" />
     <input type="text" id="destinationInput" placeholder="npr. Baščaršija (Odredišna Adresa - opcionalno)" />
-   <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
+    <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
     <button id="locateBtn" type="button">Pronađi moju lokaciju</button>
 </div>
 
@@ -115,16 +115,58 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script> @* DODANO ZA SIGNALR *@
 
 <script>
     let map;
     let userMarker;
     let driverMarkers = [];
 
+    // --- SignalR Klijent za Putnika ---
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub") // Mora se podudarati sa PutnikControllerom ili gdje već šalješ notifikacije
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("VoznjaPrihvacena", (rideData) => {
+        console.log("Vožnja prihvaćena:", rideData);
+        alert(`🎉 Vozač ${rideData.VozacUserName} je prihvatio vašu vožnju (${rideData.RideId})! ${rideData.Poruka}`);
+        // Ovdje možete dodati logiku za UI, npr. preusmjeriti korisnika na stranicu "Moja vožnja"
+        // ili prikazati status vožnje direktno na ovoj stranici.
+        // npr. window.location.href = '/Putnik/MojaVoznja';
+    });
+
+    connection.on("VoznjaOdbijena", (rideData) => {
+        console.log("Vožnja odbijena:", rideData);
+        alert(`😔 Vozač je odbio vašu vožnju (${rideData.RideId}). ${rideData.Poruka} Molimo pokušajte ponovo ili odaberite drugog vozača.`);
+        // Ovdje možete dodati logiku za UI, npr. ukloniti prethodnu poruku o narudžbi
+        // i omogućiti ponovno naručivanje.
+    });
+
+    connection.on("VoznjaZavrsena", (rideData) => {
+        console.log("Vožnja završena:", rideData);
+        alert(`✅ Vaša vožnja (${rideData.RideId}) je uspješno završena! ${rideData.Poruka}`);
+        // Ovdje možete dodati logiku za UI, npr. obrisati markere, itd.
+    });
+
+
+    async function startSignalRConnectionForPassenger() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected for Passenger.");
+        } catch (err) {
+            console.error("SignalR Connection Error for Passenger: ", err);
+            setTimeout(startSignalRConnectionForPassenger, 5000); // Pokušaj ponovo nakon 5 sekundi
+        }
+    }
+
+    // Pokreni SignalR konekciju kada se stranica učita
+    startSignalRConnectionForPassenger();
+    // --- Kraj SignalR Klijenta za Putnika ---
+
+
     async function PrikazSlobodnihVozaca() {
         const location = document.getElementById("locationInput").value.trim();
-
-
 
         if (!location) {
             alert("Molimo unesite lokaciju.");
@@ -176,7 +218,7 @@
         driverMarkers.forEach(m => map.removeLayer(m));
         driverMarkers = [];
 
-        const dostupni = drivers.filter(driver => driver.dostupnost === 1);
+        const dostupni = drivers.filter(driver => driver.dostupnost === 1); // Pretpostavka da je 1 = Dostupan
 
         if (dostupni.length === 0) {
             list.innerHTML += "<p>Nema dostupnih vozača.</p>";
@@ -188,7 +230,7 @@
 
             const distance = getDistance(userLat, userLng, driver.latitude, driver.longitude);
 
-            if (distance <= 50) {
+            if (distance <= 50) { // Unutar 50 km
                 const marker = L.marker([driver.latitude, driver.longitude]).addTo(map).bindPopup(driver.name);
                 driverMarkers.push(marker);
 
@@ -208,7 +250,7 @@
     }
 
     function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
+        const R = 6371; // Radius Zemlje u km
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -220,10 +262,9 @@
 
     // Glavna funkcija za naručivanje vožnje (Ažurirana za slanje zahtjeva kontroleru)
     async function naruciVoznju(driverId, driverName) {
-
-        console.log("Pozvana funkcija naruciVoznju."); // DODAJ OVU LINIJU
-    console.log("Driver ID:", driverId); // DODAJ OVU LINIJU
-    console.log("Driver Name:", driverName); // DODAJ OVU LINIJU
+        console.log("Pozvana funkcija naruciVoznju.");
+        console.log("Driver ID:", driverId);
+        console.log("Driver Name:", driverName);
         const pocetnaAdresa = document.getElementById("locationInput").value.trim();
         const odredisnaAdresa = document.getElementById("destinationInput").value.trim(); // Dohvati odredišnu adresu
 
@@ -233,8 +274,6 @@
         }
 
         // Dohvati ID trenutno logiranog korisnika (putnika)
-        // @(User.Identity.IsAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value : string.Empty)
-        // Ovaj dio Blade sintakse će biti renderovan na serveru u stvarni putnikId string
         const putnikId = "@(User.Identity.IsAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value : string.Empty)";
 
         if (!putnikId) {
@@ -264,8 +303,10 @@
 
             if (response.ok) {
                 const result = await response.json();
-                alert(`Uspješno ste naručili vožnju kod vozača: ${driverName}. Status: ${result.status}`);
-                // Ovdje možete dodati daljnju logiku, npr. osvježiti listu vozača, preusmjeriti korisnika itd.
+                alert(`Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`); // Promijenjen tekst
+                // Ovdje možete dodati daljnju logiku, npr. prikazati poruku "Čeka se odgovor vozača..."
+                // ili privremeno sakriti dugme za naručivanje za ovog vozača.
+                // NE REFRESHAJ STRANICU! SignalR će obavijestiti korisnika.
             } else {
                 const errorData = await response.json();
                 alert(`Greška prilikom naručivanja vožnje: ${errorData.message || response.statusText}`);
