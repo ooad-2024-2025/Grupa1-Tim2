@@ -64,10 +64,7 @@ namespace YourRide.Controllers
 
             var currentDriver = await _userManager.GetUserAsync(User);
             // SIGURNOSNA PROVJERA: Da li prijavljeni vozač zaista vozi ovu vožnju?
-            if (voznja.VozacId != currentDriver.Id)
-            {
-                return Forbid(new { message = "Nije vam dozvoljeno da završite tuđu vožnju." });
-            }
+           
 
             // Provjeri status vožnje prije završetka
             if (voznja.status != Status.Prihvacena)
@@ -124,11 +121,9 @@ namespace YourRide.Controllers
                 // Ključno je da vožnju može prihvatiti samo vozač kojem je zahtjev poslan.
                 // Ako vožnja nema VozacId pri kreiranju, onda bi više vozača moglo dobiti isti zahtjev, što je loša praksa.
                 // Zato je bolja praksa da VoznjaController Naruci akcija odmah postavi VozacId.
-                if (voznja.VozacId != null && voznja.VozacId != currentDriver.Id)
-                {
-                    return Forbid(new { message = "Ne možete prihvatiti tuđu vožnju." });
-                }
-                else if (voznja.VozacId == null) // Ako je vožnja došla bez dodijeljenog vozača
+                
+                
+                if (voznja.VozacId == null) // Ako je vožnja došla bez dodijeljenog vozača
                 {
                     // U ovom scenariju, vozač se dodjeljuje prilikom prihvatanja.
                     // Ovo je manje robustan pristup jer se zahtjev može poslati svim dostupnim vozačima.
