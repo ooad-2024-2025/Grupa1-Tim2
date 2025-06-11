@@ -15,7 +15,7 @@ namespace YourRide.Controllers
         private readonly UserManager<Korisnik> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<NotificationHub> _hubContext;
-
+        private const string PLACEHOLDER_DRIVER_ID = "59AB7C11-A0E0-4D94-92E9-B2F7C79EB643";
         public Vozac2Controller(UserManager<Korisnik> userManager, ApplicationDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _userManager = userManager;
@@ -165,7 +165,7 @@ namespace YourRide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OdbijVoznju([FromBody] int voznjaId)
         {
-            try 
+            try
             {
                 var voznja = await _context.Voznja
                     .Include(v => v.Putnik)
@@ -182,26 +182,29 @@ namespace YourRide.Controllers
                     return Unauthorized(new { message = "Vozač nije prijavljen." });
                 }
 
+                // Sigurnosna provjera: Samo vozač kojem je vožnja bila dodijeljena (ili null) je može odbiti
+                // Ova provjera se odnosi na inicijalnu dodjelu vozača koju vrši VoznjaController
                 if (voznja.VozacId != null && voznja.VozacId != currentDriver.Id)
                 {
                     return Unauthorized(new { message = "Nemate ovlaštenje za odbijanje ove vožnje." });
                 }
 
-                
-                if (voznja.status != Status.naCekanju)
+                if (voznja.status != Status.naCekanju) // Ako je enum PascalCase, koristi Status.NaCekanju
                 {
                     return BadRequest(new { message = "Vožnja se može odbiti samo dok je u statusu 'Na čekanju'." });
                 }
 
-                voznja.VozacId = null;
                 voznja.status = Status.Odbijena;
+                voznja.VozacId = PLACEHOLDER_DRIVER_ID; // <--- Ovdje se koristi hardkodirani ID
 
+                // Postavi vozača koji je odbio vožnju kao dostupnog
                 currentDriver.Dostupnost = Dostupnost.Dostupan;
 
                 _context.Voznja.Update(voznja);
                 _context.Users.Update(currentDriver);
-                await _context.SaveChangesAsync(); // <-- Posebno pažljivo prati ovu liniju
+                await _context.SaveChangesAsync(); // <-- Sada bi ovo trebalo proći bez greške
 
+                // Notifikacija putniku da je vožnja odbijena
                 if (voznja.Putnik != null)
                 {
                     await _hubContext.Clients.User(voznja.Putnik.Id).SendAsync(
@@ -216,16 +219,16 @@ namespace YourRide.Controllers
 
                 return Ok(new { message = "Vožnja je odbijena i putnik je obaviješten." });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-          
+                // Detaljno logiranje greške za debugiranje na serveru
                 Console.Error.WriteLine($"Greška prilikom odbijanja vožnje: {ex.Message}");
                 if (ex.InnerException != null)
                 {
                     Console.Error.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                 }
 
-               
+                // Vraćanje JSON odgovora sa detaljima greške klijentu
                 return StatusCode(500, new { message = $"Interna greška servera prilikom odbijanja vožnje: {ex.Message}" });
             }
         }
