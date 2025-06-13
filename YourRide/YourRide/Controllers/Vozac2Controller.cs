@@ -91,7 +91,7 @@ namespace YourRide.Controllers
                     new
                     {
                         rideId = voznja.ID,
-                        vozacUserName = currentDriver.UserName,
+                        vozacId = currentDriver.Id,
                         poruka = "Vaša vožnja je uspješno završena!"
                     }
                 );

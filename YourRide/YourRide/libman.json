@@ -1,24 +1,24 @@
 {
-  "version": "3.0",
-  "defaultProvider": "cdnjs",
-  "libraries": [
-    {
-      "library": "bootstrap@5.3.3",
-      "destination": "wwwroot/lib/bootstrap/",
-      "files": [
-        "css/bootstrap.min.css", // PROMIJENJENO: Uklonjen 'dist/'
-        "css/bootstrap.min.css.map", // PROMIJENJENO: Uklonjen 'dist/'
-        "js/bootstrap.bundle.min.js", // PROMIJENJENO: Uklonjen 'dist/'
-        "js/bootstrap.bundle.min.js.map" // PROMIJENJENO: Uklonjen 'dist/'
-      ]
-    },
-    {
-      "library": "jquery@3.7.1",
-      "destination": "wwwroot/lib/jquery/"
-    },
-    {
-      "library": "microsoft-signalr@8.0.0",
-      "destination": "wwwroot/lib/microsoft/signalr/"
-    }
-  ]
+    "version": "3.0",
+    "defaultProvider": "cdnjs",
+    "libraries": [
+        {
+            "library": "bootstrap@5.3.3",
+            "destination": "wwwroot/lib/bootstrap/",
+            "files": [
+                "css/bootstrap.min.css", // PROMIJENJENO: Uklonjen 'dist/'
+                "css/bootstrap.min.css.map", // PROMIJENJENO: Uklonjen 'dist/'
+                "js/bootstrap.bundle.min.js", // PROMIJENJENO: Uklonjen 'dist/'
+                "js/bootstrap.bundle.min.js.map" // PROMIJENJENO: Uklonjen 'dist/'
+            ]
+        },
+        {
+            "library": "jquery@3.7.1",
+            "destination": "wwwroot/lib/jquery/"
+        },
+        {
+            "library": "microsoft-signalr@8.0.0",
+            "destination": "wwwroot/lib/microsoft/signalr/"
+        }
+    ]
 }

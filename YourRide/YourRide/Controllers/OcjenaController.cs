@@ -164,5 +164,22 @@ namespace YourRide.Controllers
         {
             return _context.Ocjena.Any(e => e.ID == id);
         }
+
+        [HttpPost]
+        [Route("api/ocjena/create")]
+        public async Task<IActionResult> CreateApi([FromBody] Ocjena novaOcjena)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Ocjena.Add(novaOcjena);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return BadRequest(new { errors });
+        }
+
+
     }
 }
