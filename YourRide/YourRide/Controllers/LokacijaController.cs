@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using YourRide.Data;
 using YourRide.Models;
 
@@ -44,6 +45,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Lokacija/Create
+        [Authorize(Roles = "Vozac,Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -66,6 +68,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Lokacija/Edit/5
+        [Authorize(Roles = "Vozac,Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +120,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Lokacija/Delete/5
+        [Authorize(Roles = "Vozac,Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

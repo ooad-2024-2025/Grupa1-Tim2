@@ -9,12 +9,14 @@ namespace YourRide.Models
         public int ID { get; set; }
 
         [Required]
+        [Display(Name ="Ocjena")]
         public int ocjena { get; set; }
 
-      
+        [Display(Name = "Komentar")]
         public string komentar { get; set; }
 
         [Required]
+        [Display(Name = "Vozač")]
         [ForeignKey("Korisnik")]
         public string KorisnikId { get; set; }
 

@@ -9,7 +9,7 @@
 }
 
 .sidebar {
-    background-color: #2a9d8f;
+    background-color: #2d7c85;
     color: white;
     width: 200px;
     padding: 30px 20px;
@@ -47,13 +47,13 @@
 }
 
     .welcome-card h1 {
-        color: #2a9d8f;
+        color: #2d7c85;
         font-size: 36px;
         margin-top: 20px;
     }
 
     .welcome-card p {
-        color: #2a9d8f;
+        color: #2d7c85;
         font-size: 18px;
     }
 
@@ -61,7 +61,7 @@
     margin-top: 25px;
     padding: 12px 25px;
     font-size: 16px;
-    background-color: #2a9d8f;
+    background-color: #2d7c85;
     color: white;
     border: none;
     border-radius: 8px;

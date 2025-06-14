@@ -1,7 +1,7 @@
 ﻿@model YourRide.Models.Ocjena
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Uredi";
 }
 
 <h1>Edit</h1>
@@ -28,15 +28,15 @@
                 <select asp-for="KorisnikId" class="form-control" asp-items="ViewBag.KorisnikId"></select>
                 <span asp-validation-for="KorisnikId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group" style="margin-top:20px;">
+                <input type="submit" value="Spremi" class="btn text-white" style="background-color: #2d7c85;" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" style="color: #2d7c85;">Nazad na listu</a>
 </div>
 
 @section Scripts {
