@@ -7,8 +7,9 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create" style="color: #2d7c85;" ">Kreiraj novu lokaciju</a>
+    <a asp-action="Create" style="color: #2d7c85;">Kreiraj novu lokaciju</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,26 +29,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Grad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Naziv)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Latituda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Longituda)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Grad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naziv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Latituda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Longituda)
+                </td>
+                <td>
                     <a asp-action="Edit" style="color: #2d7c85;" asp-route-id="@item.ID">Uredi</a> |
                     <a asp-action="Details" style="color: #2d7c85;" asp-route-id="@item.ID">Detalji</a> |
                     <a asp-action="Delete" style="color: #2d7c85;" asp-route-id="@item.ID">Izbriši</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
