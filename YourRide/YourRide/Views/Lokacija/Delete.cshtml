@@ -1,12 +1,12 @@
 ﻿@model YourRide.Models.Lokacija
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Izbriši lokaciju";
 }
 
-<h1>Delete</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Jeste li sigurni da želite izbrisati?</h3>
 <div>
     <h4>Lokacija</h4>
     <hr />
@@ -39,7 +39,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Izbriši" class="btn btn-danger" /> |
+        <a asp-action="Index" style="color: #2d7c85;">Nazad na listu</a>
     </form>
 </div>

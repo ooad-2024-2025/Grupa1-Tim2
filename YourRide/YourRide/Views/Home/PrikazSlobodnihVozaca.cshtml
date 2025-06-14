@@ -64,7 +64,7 @@
         margin-bottom: 10px;
     }
 
-    #locationInput {
+    #locationInput, #destinationInput {
         width: 300px;
         padding: 8px;
         margin-right: 10px;
@@ -73,14 +73,8 @@
         font-size: 1rem;
     }
 
-    #destinationInput {
-        width: 300px;
-        padding: 8px;
-        margin-right: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 1rem;
-    }
+
+   
 
     #findBtn, #locateBtn {
         padding: 8px 12px;
@@ -178,7 +172,7 @@
 <h2>Unesite svoju lokaciju</h2>
 <div id="location-container">
     <input type="text" id="locationInput" placeholder="npr. Pofalići" />
-    <input type="text" id="destinationInput" placeholder="npr. Baščaršija (Odredišna Adresa - opcionalno)" />
+    <input type="text" id="destinationInput" placeholder="npr. Baščaršija (opcionalno)" />
     <button id="findBtn" onclick="PrikazSlobodnihVozaca()">Pronađi vozače</button>
     <button id="locateBtn" type="button">Pronađi moju lokaciju</button>
 </div>

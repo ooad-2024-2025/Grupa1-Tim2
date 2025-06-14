@@ -4,11 +4,11 @@ namespace YourRide.Models.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required]
+        
         [Display(Name = "Korisničko ime")]
         public string UserName { get; set; }
 
-        [Required]
+       
         [DataType(DataType.Password)]
         [Display(Name = "Lozinka")]
         public string Password { get; set; }

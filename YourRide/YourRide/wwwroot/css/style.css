@@ -75,9 +75,10 @@
 
 .car-icon {
     width: 100px;
+     
 }
 .nav-link.profile-link {
-    background-color: #28a745; /* zelena */
+    background-color: #2d7c85; /* zelena */
     color: white !important;
     border-radius: 8px;
     padding: 8px 15px;
