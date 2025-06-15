@@ -1,0 +1,83 @@
+﻿@using YourRide.Models
+@using System.Collections.Generic
+@using System
+
+@model List<Tuple<string, List<Korisnik>>>
+
+@{
+    ViewData["Title"] = "Admin Početna";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4" style="color: #2d7c85;">Administratorska Početna Stranica</h1>
+            <p class="lead">Pregled registrovanih korisnika po ulogama.</p>
+        </div>
+    </div>
+
+   
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var roleGroup in Model)
+        {
+            <div class="card shadow-sm mb-4">
+              
+                <div class="card-header text-white" style="background-color: #2d7c85;">
+                    <h4 class="mb-0">Uloga: @roleGroup.Item1 (broj korisnika: @roleGroup.Item2.Count )</h4>
+                </div>
+                <div class="card-body">
+                    @if (roleGroup.Item2.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Korisničko ime</th>
+                                        <th>Email</th>
+                                        @if (roleGroup.Item1 == "Vozac")
+                                        {
+                                            <th>Dostupnost</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in roleGroup.Item2.OrderBy(u => u.UserName))
+                                    {
+                                        <tr>
+                                            <td>@user.UserName</td>
+                                            <td>@user.Email</td>
+                                            @if (roleGroup.Item1 == "Vozac")
+                                            {
+                                                <td>
+                                                    @{
+                                                        string dostupnostText = user.Dostupnost.HasValue ? user.Dostupnost.ToString() : "Nije postavljeno";
+                                                        string textColor = (user.Dostupnost?.ToString() == "Dostupan") ? "color: #2d7c85; font-weight: bold;" : "";
+                                                    }
+                                                    <span style="@textColor">@dostupnostText</span>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nema korisnika u ovoj ulozi.</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-center text-muted">Nema registrovanih korisnika ili uloga za prikaz.</p>
+    }
+</div>
+
+@section Scripts {
+}

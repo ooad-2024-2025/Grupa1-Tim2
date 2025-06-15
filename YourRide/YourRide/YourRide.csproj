@@ -8,13 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\NewFolder1\**" />
     <Compile Remove="Views\NewFolder2\**" />
-    <Content Remove="Views\NewFolder1\**" />
     <Content Remove="Views\NewFolder2\**" />
-    <EmbeddedResource Remove="Views\NewFolder1\**" />
     <EmbeddedResource Remove="Views\NewFolder2\**" />
-    <None Remove="Views\NewFolder1\**" />
     <None Remove="Views\NewFolder2\**" />
   </ItemGroup>
 
@@ -30,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Views\NewFolder\" />
   </ItemGroup>
 
 </Project>

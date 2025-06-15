@@ -126,6 +126,11 @@ namespace YourRide.Areas.Identity.Pages.Account
                     {
                         return RedirectToAction("Dashboard", "Vozac2");
                     }
+                    if (roles.Contains("Administrator")) 
+                    {
+                      
+                        return RedirectToAction("AdminPocetna", "Admin");
+                    }
 
                     if (roles.Contains("TehnickaPodrska"))
                     {
