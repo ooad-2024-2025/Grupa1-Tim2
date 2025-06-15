@@ -30,6 +30,10 @@
         cursor: pointer;
     }
 
+    .sidebar a.white-link {
+        color: white;
+    }
+
 .content {
     flex-grow: 1;
     display: flex;

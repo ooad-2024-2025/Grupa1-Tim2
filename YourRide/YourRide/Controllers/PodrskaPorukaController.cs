@@ -24,6 +24,8 @@ namespace YourRide.Controllers
             _logger = logger;
         }
 
+
+
         [HttpGet]
         public IActionResult NovaPoruka()
         {

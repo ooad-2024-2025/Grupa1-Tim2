@@ -18,7 +18,7 @@
 </form>
 
 <hr />
-<button id="prikaziMojePoruke" class="btn btn-outline-primary mt-3">Moje poruke</button>
+<button id="prikaziMojePoruke" type="button" class="btn btn-outline-primary mt-3">Moje poruke</button>
 <div id="mojePorukeContainer" class="mt-3"></div>
 
 @section Scripts {
@@ -27,9 +27,16 @@
     <script>
         $(document).ready(function () {
             $('#prikaziMojePoruke').click(function () {
-                $.get('@Url.Action("MojePorukePartial", "PodrskaPoruka")', function (data) {
-                    $('#mojePorukeContainer').html(data);
-                });
+                var container = $('#mojePorukeContainer');
+
+                if (container.is(':visible')) {
+                    container.hide();
+                    container.html(''); // očisti ako želiš
+                } else {
+                    $.get('@Url.Action("MojePorukePartial", "PodrskaPoruka")', function (data) {
+                        container.html(data).show();
+                    });
+                }
             });
         });
     </script>
