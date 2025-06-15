@@ -1,9 +1,9 @@
 ﻿@model List<YourRide.Models.Voznja>
 @{
-    ViewData["Title"] = "Vozačev Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
-<h1>Vozačev Dashboard</h1>
+<h1>Dashboard</h1>
 
 <div class="row">
     <div class="col-md-6">
@@ -11,14 +11,14 @@
         <p>Ovdje možete upravljati svojim vožnjama i primati nove zahtjeve.</p>
 
         <h3>
-            Status Vaše Dostupnosti:
+            Status dostupnosti:
             <span id="vozacDostupnost" class="badge bg-secondary">
                 @(ViewBag.DostupnostStatus ?? "Nepoznato")
             </span>
         </h3>
     </div>
     <div class="col-md-6">
-        <h3>Novi Zahtjevi za Vožnju</h3>
+        <h3>Novi zahtjevi za vožnju</h3>
         <div class="card">
             <div class="card-body">
                 <ul id="rideRequestsList" class="list-group">
@@ -33,7 +33,7 @@
 
 <hr />
 
-<h2>Vaše Aktivne Vožnje</h2>
+<h2>Vaše aktivne vožnje</h2>
 @if (Model != null && Model.Any())
 {
     <table class="table table-striped">

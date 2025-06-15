@@ -20,6 +20,8 @@ namespace YourRide.Data
         public DbSet<Ruta> Ruta { get; set; }
         public DbSet<Ocjena> Ocjena { get; set; }
 
+        public DbSet<PodrskaPoruka> PorukePodrske { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Korisnik>().ToTable("AspNetUsers");

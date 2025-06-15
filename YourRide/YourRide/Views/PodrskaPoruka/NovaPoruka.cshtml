@@ -1,0 +1,36 @@
+﻿@model YourRide.Models.PodrskaPorukaDto
+
+<h2>Pošalji novu poruku podršci</h2>
+
+<form asp-action="NovaPoruka" method="post">
+    <div class="form-group">
+        <label asp-for="Naslov"></label>
+        <input asp-for="Naslov" class="form-control" />
+        <span asp-validation-for="Naslov" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Poruka"></label>
+        <textarea asp-for="Poruka" class="form-control"></textarea>
+        <span asp-validation-for="Poruka" class="text-danger"></span>
+        <div class="form-group" style="margin-top:20px;">
+            <input type="submit" value="Pošalji" class="btn text-white" style="background-color: #2d7c85;" />
+        </div>
+</form>
+
+<hr />
+<button id="prikaziMojePoruke" class="btn btn-outline-primary mt-3">Moje poruke</button>
+<div id="mojePorukeContainer" class="mt-3"></div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#prikaziMojePoruke').click(function () {
+                $.get('@Url.Action("MojePorukePartial", "PodrskaPoruka")', function (data) {
+                    $('#mojePorukeContainer').html(data);
+                });
+            });
+        });
+    </script>
+}

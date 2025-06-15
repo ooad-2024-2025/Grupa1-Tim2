@@ -33,6 +33,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja
+        [Authorize(Roles = "Administrator,Vozac,TehnickaPodrska")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Voznja.Include(v => v.Putnik).Include(v => v.Ruta).Include(v => v.Vozac);
@@ -40,6 +41,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja/Details/5
+        [Authorize(Roles = "Administrator,Vozac,TehnickaPodrska")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

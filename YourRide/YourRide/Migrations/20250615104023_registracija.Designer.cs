@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourRide.Data;
 
@@ -11,9 +12,11 @@ using YourRide.Data;
 namespace YourRide.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615104023_registracija")]
+    partial class registracija
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,36 +292,6 @@ namespace YourRide.Migrations
                     b.ToTable("Ocjena", (string)null);
                 });
 
-            modelBuilder.Entity("YourRide.Models.PodrskaPoruka", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("DatumSlanja")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("KorisnikId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Naslov")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Poruka")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("KorisnikId");
-
-                    b.ToTable("PorukePodrske");
-                });
-
             modelBuilder.Entity("YourRide.Models.Ruta", b =>
                 {
                     b.Property<int>("ID")
@@ -433,17 +406,6 @@ namespace YourRide.Migrations
                 });
 
             modelBuilder.Entity("YourRide.Models.Ocjena", b =>
-                {
-                    b.HasOne("YourRide.Models.Korisnik", "Korisnik")
-                        .WithMany()
-                        .HasForeignKey("KorisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Korisnik");
-                });
-
-            modelBuilder.Entity("YourRide.Models.PodrskaPoruka", b =>
                 {
                     b.HasOne("YourRide.Models.Korisnik", "Korisnik")
                         .WithMany()
