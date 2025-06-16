@@ -1,4 +1,4 @@
-﻿@model YourRide.Models.Notifikacija
+﻿@model YourRide.Models.PodrskaPoruka
 
 @{
     ViewData["Title"] = "Details";
@@ -7,32 +7,32 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Notifikacija</h4>
+    <h4>PodrskaPoruka</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.poruka)
+            @Html.DisplayNameFor(model => model.Naslov)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.poruka)
+            @Html.DisplayFor(model => model.Naslov)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VrijemeSlanja)
+            @Html.DisplayNameFor(model => model.Poruka)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VrijemeSlanja)
+            @Html.DisplayFor(model => model.Poruka)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Posiljalac)
+            @Html.DisplayNameFor(model => model.DatumSlanja)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Posiljalac.Id)
+            @Html.DisplayFor(model => model.DatumSlanja)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Primalac)
+            @Html.DisplayNameFor(model => model.Korisnik)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Primalac.Id)
+            @Html.DisplayFor(model => model.Korisnik.Id)
         </dd>
     </dl>
 </div>

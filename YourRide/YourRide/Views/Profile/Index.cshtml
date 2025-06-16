@@ -9,6 +9,7 @@
         background-color: #e0f5e9;
         font-family: 'Segoe UI', sans-serif;
     }
+    }
 
     .profile-wrapper {
         max-width: 600px;
@@ -105,7 +106,7 @@
     <div class="profile-card">
         <p><strong>Korisničko ime:</strong> @Model.UserName</p>
         <p><strong>Email:</strong> @Model.Email</p>
-        <p><strong>ID korisnika:</strong> @Model.Id</p>
+        
     </div>
 
     @if (User.IsInRole("Vozac"))

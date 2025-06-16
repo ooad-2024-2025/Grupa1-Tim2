@@ -1,13 +1,13 @@
 ﻿@model YourRide.Models.Voznja
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalji";
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div>
-    <h4>Voznja</h4>
+    <h4>Vožnja</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -50,6 +50,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    
+    @if (User.IsInRole("Nepostojeci"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a>
+    }
+    <a asp-action="Index" style="color: #2d7c85;">Nazad na listu</a>
 </div>

@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR; // <-- OVO MORA BITI TU
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using YourRide.Data;
 using YourRide.Hubs;
-using YourRide.Models;
-using Microsoft.AspNetCore.SignalR; // <-- OVO MORA BITI TU
 using YourRide.Hubs;
+using YourRide.Models;
 
 namespace YourRide.Controllers
 {
@@ -32,6 +33,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja
+        [Authorize(Roles = "Administrator,Vozac,TehnickaPodrska")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Voznja.Include(v => v.Putnik).Include(v => v.Ruta).Include(v => v.Vozac);
@@ -39,6 +41,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja/Details/5
+        [Authorize(Roles = "Administrator,Vozac,TehnickaPodrska")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -60,6 +63,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja/Create
+        [Authorize(Roles = "Nepostojeci")]
         public IActionResult Create()
         {
             ViewData["PutnikId"] = new SelectList(_context.Users, "Id", "Id");
@@ -88,6 +92,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja/Edit/5
+        [Authorize(Roles = "Nepostojeci")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -145,6 +150,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Voznja/Delete/5
+        [Authorize(Roles = "Nepostojeci")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

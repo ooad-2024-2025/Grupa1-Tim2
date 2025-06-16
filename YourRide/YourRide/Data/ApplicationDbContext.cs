@@ -15,16 +15,18 @@ namespace YourRide.Data
         
         
         public DbSet<Voznja> Voznja { get; set; }
-        public DbSet<Notifikacija> Notifikacija { get; set; }
+       
         public DbSet<Lokacija> Lokacija { get; set; }
         public DbSet<Ruta> Ruta { get; set; }
         public DbSet<Ocjena> Ocjena { get; set; }
+
+        public DbSet<PodrskaPoruka> PorukePodrske { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Korisnik>().ToTable("AspNetUsers");
             modelBuilder.Entity<Voznja>().ToTable("Voznja");
-            modelBuilder.Entity<Notifikacija>().ToTable("Notifikacija");
+           
             modelBuilder.Entity<Lokacija>().ToTable("Lokacija");
             modelBuilder.Entity<Ruta>().ToTable("Ruta");
             modelBuilder.Entity<Ocjena>().ToTable("Ocjena");
@@ -56,17 +58,9 @@ namespace YourRide.Data
 
 
 
-            modelBuilder.Entity<Notifikacija>()
-        .HasOne(n => n.Posiljalac)
-        .WithMany()
-        .HasForeignKey(n => n.PosiljalacId)
-        .OnDelete(DeleteBehavior.Restrict);
+            
 
-            modelBuilder.Entity<Notifikacija>()
-                .HasOne(n => n.Primalac)
-                .WithMany()
-                .HasForeignKey(n => n.PrimalacId)
-                .OnDelete(DeleteBehavior.Restrict);
+           
 
             base.OnModelCreating(modelBuilder);
         }

@@ -1,10 +1,10 @@
 ﻿@model YourRide.Models.Lokacija
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalji";
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div>
     <h4>Lokacija</h4>
@@ -37,6 +37,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" style="color: #2d7c85;" asp-route-id="@Model?.ID">Uredi</a> |
+    <a asp-action="Index" style="color: #2d7c85;">Nazad na listu</a>
 </div>

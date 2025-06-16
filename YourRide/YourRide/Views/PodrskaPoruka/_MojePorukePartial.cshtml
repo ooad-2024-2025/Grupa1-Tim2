@@ -1,0 +1,28 @@
+﻿@model List<YourRide.Models.PodrskaPoruka>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Naslov</th>
+                <th>Poruka</th>
+                <th>Datum slanja</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var poruka in Model)
+            {
+                <tr>
+                    <td>@poruka.Naslov</td>
+                    <td>@poruka.Poruka</td>
+                    <td>@poruka.DatumSlanja.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Nemate nijednu poruku.</p>
+}

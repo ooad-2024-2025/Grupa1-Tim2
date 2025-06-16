@@ -1,0 +1,59 @@
+﻿@model IEnumerable<YourRide.Models.PodrskaPoruka>
+
+@{
+    ViewData["Title"] = "Lista";
+}
+
+<h1>Lista</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naslov)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Poruka)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatumSlanja)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Korisnik)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Naslov)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Poruka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumSlanja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Korisnik.Id)
+            </td>
+            <td>
+
+                    @if (User.IsInRole("Administrator,TehnickaPodrska"))
+                    {
+                        <a asp-action="Details" style="color: #2d7c85;" asp-route-id="@item.ID">Detalji</a>
+                    }
+
+                    @if (User.IsInRole("TehnickaPodrska"))
+                    {
+                        <a asp-action="Delete" style="color: #2d7c85;"  asp-route-id="@item.ID">Izbriši</a>
+                    }
+               
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

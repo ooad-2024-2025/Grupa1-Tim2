@@ -2,18 +2,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using YourRide.Models;
 
 namespace YourRide.Areas.Identity.Pages.Account
@@ -22,11 +23,13 @@ namespace YourRide.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<Korisnik> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<Korisnik> _userManager;
 
-        public LoginModel(SignInManager<Korisnik> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<Korisnik> signInManager, ILogger<LoginModel> logger, UserManager<Korisnik> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -65,14 +68,14 @@ namespace YourRide.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Korisničko ime je obavezno")]
             [Display(Name = "Korisničko ime")]
             public string UserName { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Lozinka je obavezna")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -80,7 +83,7 @@ namespace YourRide.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Sjećate me se?")]
             public bool RememberMe { get; set; }
         }
 
@@ -115,6 +118,24 @@ namespace YourRide.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    var user = await _userManager.FindByNameAsync(Input.UserName);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("Vozac"))
+                    {
+                        return RedirectToAction("Dashboard", "Vozac2");
+                    }
+                    if (roles.Contains("Administrator")) 
+                    {
+                      
+                        return RedirectToAction("AdminPocetna", "Admin");
+                    }
+
+                    if (roles.Contains("TehnickaPodrska"))
+                    {
+                        return RedirectToAction("Index", "Podrska");
+                    }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -128,7 +149,7 @@ namespace YourRide.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Pogrešni podaci.");
                     return Page();
                 }
             }

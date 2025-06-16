@@ -210,6 +210,9 @@ namespace YourRide.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Registracija")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -260,38 +263,6 @@ namespace YourRide.Migrations
                     b.ToTable("Lokacija", (string)null);
                 });
 
-            modelBuilder.Entity("YourRide.Models.Notifikacija", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("PosiljalacId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PrimalacId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("VrijemeSlanja")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("poruka")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("PosiljalacId");
-
-                    b.HasIndex("PrimalacId");
-
-                    b.ToTable("Notifikacija", (string)null);
-                });
-
             modelBuilder.Entity("YourRide.Models.Ocjena", b =>
                 {
                     b.Property<int>("ID")
@@ -316,6 +287,36 @@ namespace YourRide.Migrations
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("Ocjena", (string)null);
+                });
+
+            modelBuilder.Entity("YourRide.Models.PodrskaPoruka", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("DatumSlanja")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("KorisnikId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Naslov")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Poruka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("PorukePodrske");
                 });
 
             modelBuilder.Entity("YourRide.Models.Ruta", b =>
@@ -431,26 +432,18 @@ namespace YourRide.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YourRide.Models.Notifikacija", b =>
+            modelBuilder.Entity("YourRide.Models.Ocjena", b =>
                 {
-                    b.HasOne("YourRide.Models.Korisnik", "Posiljalac")
+                    b.HasOne("YourRide.Models.Korisnik", "Korisnik")
                         .WithMany()
-                        .HasForeignKey("PosiljalacId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YourRide.Models.Korisnik", "Primalac")
-                        .WithMany()
-                        .HasForeignKey("PrimalacId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Posiljalac");
-
-                    b.Navigation("Primalac");
+                    b.Navigation("Korisnik");
                 });
 
-            modelBuilder.Entity("YourRide.Models.Ocjena", b =>
+            modelBuilder.Entity("YourRide.Models.PodrskaPoruka", b =>
                 {
                     b.HasOne("YourRide.Models.Korisnik", "Korisnik")
                         .WithMany()

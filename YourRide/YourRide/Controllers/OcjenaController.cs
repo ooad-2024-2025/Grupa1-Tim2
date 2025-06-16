@@ -47,7 +47,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Ocjena/Create
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Nepostojeci")]
         public IActionResult Create()
         {
             ViewData["KorisnikId"] = new SelectList(_context.Users, "Id", "Id");
@@ -72,7 +72,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Ocjena/Edit/5
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Nepostojeci")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -126,7 +126,7 @@ namespace YourRide.Controllers
         }
 
         // GET: Ocjena/Delete/5
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Nepostojeci")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

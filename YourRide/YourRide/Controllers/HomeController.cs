@@ -1,5 +1,6 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using YourRide.Models;
 
 namespace YourRide.Controllers
@@ -7,15 +8,25 @@ namespace YourRide.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<Korisnik> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<Korisnik> userManager)
         {
             
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+
         {
+
+            var user = await _userManager.GetUserAsync(User);
+            bool isPutnik = user != null && await _userManager.IsInRoleAsync(user, "Putnik");
+            bool isTehnicka= user!=null && await _userManager.IsInRoleAsync(user, "TehnickaPodrska");
+
+            ViewData["IsPutnik"] = isPutnik;
+            ViewData["IsTehnicka"] = isTehnicka;
             return View();
         }
 

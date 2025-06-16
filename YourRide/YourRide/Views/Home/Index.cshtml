@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Početna";
+    var isPutnik = ViewData["IsPutnik"] as bool? ?? false;
+    var isTehnicka=ViewData["isTehnicka"] as bool? ?? false;
 }
 
 <link rel="stylesheet" href="~/css/style.css" />
@@ -7,9 +9,11 @@
 <div class="main-container">
     <div class="sidebar">
         <ul>
-            <li><i class="fas fa-car"></i> Vožnje</li>
-            <li><i class="fas fa-user"></i> <a asp-controller="Profile" asp-action="Index">Profil</a></li>
-            <li><i class="fas fa-headset"></i> Podrška</li>
+            
+            <li><i class="fas fa-user"></i> <a asp-controller="Profile" asp-action="Index">Profil</a></li
+                @if(!isTehnicka){
+            <li><i class="fas fa-headset"></i> <a asp-controller="PodrskaPoruka" asp-action="NovaPoruka">Podrška</a></li>
+                }
         </ul>
     </div>
 
@@ -19,10 +23,12 @@
             <h1>YourRide</h1>
             <p>Uživajte u vožnji sa nama!</p>
 
-            <!-- Dugme vodi na akciju PrikazSlobodnihVozaca -->
-            <button class="start-button" onclick="location.href='@Url.Action("PrikazSlobodnihVozaca", "Home")'">
-                Započni
-            </button>
+            @if (isPutnik)
+            {
+                <button class="start-button" onclick="location.href='@Url.Action("PrikazSlobodnihVozaca", "Home")'">
+                    Započni
+                </button>
+            }
         </div>
     </div>
 </div>

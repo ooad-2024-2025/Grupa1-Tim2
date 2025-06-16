@@ -32,8 +32,8 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/Account/ForgotPassword.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/Account/ConfirmEmail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxDb25maXJtRW1haWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/Account/Login.cshtml]
@@ -52,10 +52,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZWdpc3RlckNvbmZpcm1hdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/Account/ResetPassword.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/Account/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxfVmlld0ltcG9ydHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -70,6 +66,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Areas/Identity/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Admin/AdminPocetna.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5Qb2NldG5hLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Home/Index.cshtml]
@@ -104,26 +104,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9rYWNpamFcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Notifikacija/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpa2FjaWphXENyZWF0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Notifikacija/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpa2FjaWphXERlbGV0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Notifikacija/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpa2FjaWphXERldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Notifikacija/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpa2FjaWphXEVkaXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Notifikacija/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpa2FjaWphXEluZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ocjena/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2NqZW5hXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -144,8 +124,76 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2NqZW5hXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/NovaPoruka.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxOb3ZhUG9ydWthLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/PodrskaPoruka/_MojePorukePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVBvcnVrYVxfTW9qZVBvcnVrZVBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Podrska/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Podrska/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Podrska/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Podrska/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Podrska/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9kcnNrYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Profile/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ruta/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ruta/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ruta/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ruta/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Ruta/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUnV0YVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/irmal/Source/Repos/Grupa1-Tim2/YourRide/YourRide/Views/Shared/Error.cshtml]

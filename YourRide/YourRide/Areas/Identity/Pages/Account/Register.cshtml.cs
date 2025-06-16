@@ -78,8 +78,8 @@ namespace YourRide.Areas.Identity.Pages.Account
             [Display(Name = "Korisničko ime")]
             public string UserName { get; set; }
 
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Email je obavezan")]
+            [EmailAddress(ErrorMessage = "Email mora biti ispravnog formata i sadržavati znak '@'")]
             [Display(Name = "Email adresa")]
             public string Email { get; set; }
 
@@ -88,7 +88,9 @@ namespace YourRide.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Lozinka mora imati barem 6 znakova", MinimumLength = 6)]
+            [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$",
+    ErrorMessage = "Lozinka mora sadržavati barem jedno veliko slovo, jedno malo slovo i jedan broj.")]
             [DataType(DataType.Password)]
             [Display(Name = "Lozinka")]
             public string Password { get; set; }
@@ -128,6 +130,8 @@ namespace YourRide.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, "Putnik");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
