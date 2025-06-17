@@ -3,6 +3,254 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background-color: #f0f2f5; 
+        margin: 0;
+        padding: 20px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+        color: #2c3e50; /* Darker blue-grey for headings */
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    /* Layout adjustments */
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .col-md-6 {
+        padding: 15px; /* Increase internal padding */
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 10px; /* More rounded corners */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        border: none;
+        overflow: hidden; 
+    }
+
+    .card-body {
+        padding: 25px; 
+    }
+
+    
+    .list-group {
+        padding: 0;
+        margin: 0;
+    }
+
+    .list-group-item {
+        border-radius: 8px; /* Rounded list items */
+        margin-bottom: 12px;
+        border: 1px solid #e0e0e0; /* Lighter border */
+        padding: 18px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .list-group-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-group-item:hover {
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Enhanced shadow on hover */
+        }
+
+        .list-group-item h5 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .list-group-item p {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .list-group-item .btn {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 8px 18px;
+        }
+
+    /* Overlay backdrop for all popups */
+    .overlay-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75); /* Slightly darker for better contrast */
+        z-index: 1040; /* Standard Z-index for Bootstrap modals' backdrop is 1040 */
+        display: none; /* Hidden by default */
+        opacity: 0; /* For transition effect */
+        transition: opacity 0.3s ease-out;
+    }
+
+        .overlay-backdrop.show {
+            opacity: 1;
+        }
+
+    /* General popup styling for notifications and confirmations */
+    #driver-notification-section,
+    #confirmation-section {
+        background-color: #ffffff;
+        padding: 35px; /* Increased padding */
+        border-radius: 12px; /* Consistent rounded corners */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.35); /* Stronger, more defined shadow */
+        text-align: center;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9); /* Start slightly smaller for scale animation */
+        z-index: 1050; /* Standard Z-index for Bootstrap modals is 1050 */
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        max-width: 90%; /* Ensure responsiveness */
+        width: 480px; /* Preferred width */
+        min-width: 300px; /* Minimum width on small screens */
+        border: 1px solid #e0e0e0; /* Subtle border */
+    }
+
+        #driver-notification-section.show,
+        #confirmation-section.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1); /* Scale to full size */
+        }
+
+        #driver-notification-section h4,
+        #confirmation-section h4 {
+            margin-bottom: 25px;
+            font-size: 1.5rem; /* Larger, more impactful message */
+            font-weight: 600;
+            color: #333;
+        }
+
+        #driver-notification-section .btn,
+        #confirmation-section .btn {
+            padding: 12px 28px; /* Larger, more clickable buttons */
+            font-size: 1rem;
+            border-radius: 8px; /* More rounded buttons */
+            margin: 0 10px;
+            min-width: 120px;
+            transition: all 0.2s ease-in-out;
+        }
+
+    /* Specific button styling */
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+    #confirmation-section .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        #confirmation-section .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004d9b;
+            transform: translateY(-2px); /* More pronounced lift */
+        }
+
+    #confirmation-section .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        #confirmation-section .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+        }
+
+    /* Table styling */
+    .table {
+        margin-top: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        width: 100%;
+        border-collapse: separate; /* Use separate to allow border-radius on table */
+        border-spacing: 0;
+    }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+            padding: 15px 20px; /* More padding */
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody td {
+            padding: 15px 20px; /* More padding */
+            vertical-align: middle;
+            border-top: 1px solid #e0e0e0; /* Lighter border */
+        }
+
+        .table tbody tr:hover {
+            background-color: #f5f5f5; /* Subtle hover effect */
+        }
+
+        .table .btn-sm {
+            padding: 7px 14px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            margin-right: 8px;
+        }
+
+            .table .btn-sm:last-child {
+                margin-right: 0;
+            }
+
+    /* Status badge colors */
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+        border-radius: 0.35rem;
+        font-weight: bold;
+    }
+
+        .badge.bg-secondary {
+            background-color: #6c757d !important;
+        }
+
+    .alert {
+        padding: 18px;
+        margin-top: 20px;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        background-color: #d1ecf1; /* Light blue for info */
+        color: #0c5460; /* Darker blue text */
+        border-color: #bee5eb;
+    }
+</style>
+
 <h1>Dashboard</h1>
 
 <div class="row">
@@ -33,6 +281,19 @@
 
 <hr />
 
+<div id="overlay-backdrop" class="overlay-backdrop"></div>
+
+<div id="driver-notification-section">
+    <h4></h4>
+    <button class="btn btn-secondary mt-3" onclick="hideDriverNotification()">Zatvori</button>
+</div>
+
+<div id="confirmation-section">
+    <h4 id="confirmation-message"></h4>
+    <button id="confirm-yes-btn" class="btn btn-primary">Da</button>
+    <button id="confirm-no-btn" class="btn btn-danger">Ne</button>
+</div>
+
 <h2>Vaše aktivne vožnje</h2>
 @if (Model != null && Model.Any())
 {
@@ -62,7 +323,7 @@
                         <button class="btn btn-sm btn-primary" onclick="window.location.href='/Voznja/Detalji/@voznja.ID'">Detalji</button>
                         @if (voznja.status == YourRide.Models.Status.Prihvacena)
                         {
-                            <button class="btn btn-sm btn-success" onclick="zavrsiVoznju('@voznja.ID')">Završi Vožnju</button>
+                            <button class="btn btn-sm btn-success" onclick="confirmZavrsiVoznju('@voznja.ID')">Završi Vožnju</button>
                         }
                     </td>
                 </tr>
@@ -79,7 +340,109 @@ else
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
     <script>
         const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        // Corrected C# ToLower() method call
         const isDriver = @User.IsInRole("Vozac").ToString().ToLower();
+
+        const overlayBackdrop = document.getElementById("overlay-backdrop");
+        const driverNotificationSection = document.getElementById("driver-notification-section");
+        const driverNotificationMessage = driverNotificationSection.querySelector('h4');
+
+        const confirmationSection = document.getElementById("confirmation-section");
+        const confirmationMessage = document.getElementById("confirmation-message");
+        const confirmYesBtn = document.getElementById("confirm-yes-btn");
+        const confirmNoBtn = document.getElementById("confirm-no-btn");
+
+        let currentConfirmationCallback = null;
+
+        
+        function showDriverNotification(message, isError = false) {
+            driverNotificationMessage.innerText = message;
+            driverNotificationSection.style.display = "block";
+            
+            setTimeout(() => {
+                driverNotificationSection.classList.add('show');
+                overlayBackdrop.classList.add('show');
+            }, 10); 
+
+            overlayBackdrop.style.display = "block";
+
+            if (isError) {
+                driverNotificationSection.style.borderColor = "#dc3545";
+                driverNotificationMessage.style.color = "#dc3545";
+            } else {
+                driverNotificationSection.style.borderColor = "#28a745";
+                driverNotificationMessage.style.color = "#212529";
+            }
+        }
+
+        // Funkcija za skrivanje notifikacija
+        function hideDriverNotification() {
+            driverNotificationSection.classList.remove('show');
+            driverNotificationSection.addEventListener('transitionend', function handler() {
+                driverNotificationSection.style.display = "none";
+                driverNotificationMessage.innerText = "";
+                // Only hide backdrop if no other popups are active
+                if (!confirmationSection.classList.contains('show')) {
+                    overlayBackdrop.classList.remove('show');
+                    overlayBackdrop.addEventListener('transitionend', function handler2() {
+                        overlayBackdrop.style.display = "none";
+                        overlayBackdrop.removeEventListener('transitionend', handler2);
+                    }, { once: true });
+                }
+                driverNotificationSection.removeEventListener('transitionend', handler);
+            }, { once: true });
+        }
+
+        // za prikaz confirmation popup-a
+        function showConfirmation(message, onConfirmCallback) {
+            confirmationMessage.innerText = message;
+            confirmationSection.style.display = "block";
+            setTimeout(() => {
+                confirmationSection.classList.add('show');
+                overlayBackdrop.classList.add('show');
+            }, 10);
+
+            overlayBackdrop.style.display = "block";
+
+            currentConfirmationCallback = onConfirmCallback;
+
+            confirmYesBtn.onclick = null;
+            confirmNoBtn.onclick = null;
+
+            confirmYesBtn.onclick = () => {
+                hideConfirmation();
+                if (currentConfirmationCallback) {
+                    currentConfirmationCallback(true);
+                }
+            };
+
+            confirmNoBtn.onclick = () => {
+                hideConfirmation();
+                if (currentConfirmationCallback) {
+                    currentConfirmationCallback(false);
+                }
+            };
+        }
+
+        // skrivanje confirmation popupova
+        function hideConfirmation() {
+            confirmationSection.classList.remove('show');
+            confirmationSection.addEventListener('transitionend', function handler() {
+                confirmationSection.style.display = "none";
+                confirmationMessage.innerText = "";
+                currentConfirmationCallback = null;
+                
+                if (!driverNotificationSection.classList.contains('show')) {
+                    overlayBackdrop.classList.remove('show');
+                    overlayBackdrop.addEventListener('transitionend', function handler2() {
+                        overlayBackdrop.style.display = "none";
+                        overlayBackdrop.removeEventListener('transitionend', handler2);
+                    }, { once: true });
+                }
+                confirmationSection.removeEventListener('transitionend', handler);
+            }, { once: true });
+        }
+
 
         if (isDriver) {
             const connection = new signalR.HubConnectionBuilder()
@@ -88,7 +451,6 @@ else
                 .build();
 
             connection.on("ReceiveRideRequest", (rideRequestData) => {
-                // Ovdje provjeri konzolu da vidiš tačne nazive property-ja
                 console.log("Primljen zahtjev za vožnju:", rideRequestData);
 
                 const rideRequestsList = document.getElementById('rideRequestsList');
@@ -104,17 +466,41 @@ else
                     <p><strong>Vožnja ID:</strong> ${rideRequestData.rideId}</p>
                     <p><strong>Početna lokacija:</strong> ${rideRequestData.pocetnaAdresa}</p>
                     <p><strong>Odredišna lokacija:</strong> ${rideRequestData.odredisnaAdresa ?? 'Nije navedeno'}</p>
-                    <button class="btn btn-success btn-sm me-2" onclick="prihvatiVoznju('${rideRequestData.rideId}', this)">Prihvati</button>
-                    <button class="btn btn-danger btn-sm" onclick="odbijVoznju('${rideRequestData.rideId}', this)">Odbij</button>
+                    <button class="btn btn-success btn-sm me-2" onclick="confirmPrihvatiVoznju('${rideRequestData.rideId}', this)">Prihvati</button>
+                    <button class="btn btn-danger btn-sm" onclick="confirmOdbijVoznju('${rideRequestData.rideId}', this)">Odbij</button>
                 `;
                 rideRequestsList.prepend(listItem);
 
-                alert(`Novi zahtjev za vožnju od ${rideRequestData.putnikUserName}!`);
+                showDriverNotification(`Novi zahtjev za vožnju od ${rideRequestData.putnikUserName}!`);
             });
 
-            async function prihvatiVoznju(voznjaId, buttonElement) {
-                if (!confirm('Jeste li sigurni da želite prihvatiti ovu vožnju?')) return;
+            // hocel proci sa Wrapper funkcijom
+            function confirmPrihvatiVoznju(voznjaId, buttonElement) {
+                showConfirmation('Jeste li sigurni da želite prihvatiti ovu vožnju?', (confirmed) => {
+                    if (confirmed) {
+                        prihvatiVoznju(voznjaId, buttonElement);
+                    }
+                });
+            }
 
+            function confirmOdbijVoznju(voznjaId, buttonElement) {
+                showConfirmation('Jeste li sigurni da želite odbiti ovu vožnju?', (confirmed) => {
+                    if (confirmed) {
+                        odbijVoznju(voznjaId, buttonElement);
+                    }
+                });
+            }
+
+            function confirmZavrsiVoznju(voznjaId) {
+                showConfirmation('Jeste li sigurni da želite završiti ovu vožnju?', (confirmed) => {
+                    if (confirmed) {
+                        zavrsiVoznju(voznjaId);
+                    }
+                });
+            }
+
+
+            async function prihvatiVoznju(voznjaId, buttonElement) {
                 try {
                     const response = await fetch('/Vozac2/PrihvatiVoznju', {
                         method: 'POST',
@@ -127,7 +513,7 @@ else
 
                     if (response.ok) {
                         const result = await response.json();
-                        alert(result.message);
+                        showDriverNotification(result.message);
                         if (buttonElement?.parentElement) {
                             buttonElement.parentElement.remove();
                         }
@@ -135,17 +521,15 @@ else
                         location.reload();
                     } else {
                         const errorData = await response.json();
-                        alert(`Greška pri prihvaćanju vožnje: ${errorData.message}`);
+                        showDriverNotification(`Greška pri prihvaćanju vožnje: ${errorData.message}`, true);
                     }
                 } catch (error) {
                     console.error('Greška pri prihvatanju vožnje:', error);
-                    alert('Došlo je do greške prilikom prihvaćanja vožnje.');
+                    showDriverNotification('Došlo je do greške prilikom prihvaćanja vožnje.', true);
                 }
             }
 
             async function odbijVoznju(voznjaId, buttonElement) {
-                if (!confirm('Jeste li sigurni da želite odbiti ovu vožnju?')) return;
-
                 try {
                     const response = await fetch('/Vozac2/OdbijVoznju', {
                         method: 'POST',
@@ -158,24 +542,22 @@ else
 
                     if (response.ok) {
                         const result = await response.json();
-                        alert(result.message);
+                        showDriverNotification(result.message);
                         if (buttonElement?.parentElement) {
                             buttonElement.parentElement.remove();
                         }
                         provjeriIsprazniListu();
                     } else {
                         const errorData = await response.json();
-                        alert(`Greška pri odbijanju vožnje: ${errorData.message}`);
+                        showDriverNotification(`Greška pri odbijanju vožnje: ${errorData.message}`, true);
                     }
                 } catch (error) {
                     console.error('Greška pri odbijanju vožnje:', error);
-                    alert('Došlo je do greške prilikom odbijanja vožnje.');
+                    showDriverNotification('Došlo je do greške prilikom odbijanja vožnje.', true);
                 }
             }
 
             async function zavrsiVoznju(voznjaId) {
-                if (!confirm('Jeste li sigurni da želite završiti ovu vožnju?')) return;
-
                 try {
                     const response = await fetch('/Vozac2/ZavrsiVoznju', {
                         method: 'POST',
@@ -188,15 +570,15 @@ else
 
                     if (response.ok) {
                         const result = await response.json();
-                        alert(result.message);
+                        showDriverNotification(result.message);
                         location.reload();
                     } else {
                         const errorData = await response.json();
-                        alert(`Greška pri završetku vožnje: ${errorData.message}`);
+                        showDriverNotification(`Greška pri završetku vožnje: ${errorData.message}`, true);
                     }
                 } catch (error) {
                     console.error('Greška pri završetku vožnje:', error);
-                    alert('Došlo je do greške prilikom završetka vožnje.');
+                    showDriverNotification('Došlo je do greške prilikom završetka vožnje.', true);
                 }
             }
 
@@ -207,9 +589,12 @@ else
                 }
             }
 
-            window.prihvatiVoznju = prihvatiVoznju;
-            window.odbijVoznju = odbijVoznju;
-            window.zavrsiVoznju = zavrsiVoznju;
+           
+            window.confirmPrihvatiVoznju = confirmPrihvatiVoznju;
+            window.confirmOdbijVoznju = confirmOdbijVoznju;
+            window.confirmZavrsiVoznju = confirmZavrsiVoznju;
+
+            window.hideDriverNotification = hideDriverNotification; 
 
             connection.start().catch(err => console.error('SignalR connection error:', err));
         }

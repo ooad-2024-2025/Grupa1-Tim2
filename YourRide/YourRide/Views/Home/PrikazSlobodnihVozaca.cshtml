@@ -73,8 +73,71 @@
         font-size: 1rem;
     }
 
+    /* Global styles for notification sections - IMPROVED FOR OVERLAY */
+    #rating-section,
+    #ride-accepted-section,
+    #ride-rejected-section,
+    #general-notification-section { /* Added general-notification-section for generic messages */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        text-align: center;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        max-width: 90%;
+        width: 450px;
+        min-width: 300px;
+        display: none; /* Initially hidden */
+    }
 
-   
+    /* Stil za preklapanje pozadine */
+    .overlay-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none; /* Inicijalno sakriveno */
+    }
+
+    .star {
+        font-size: 32px;
+        cursor: pointer;
+        color: lightgray;
+        transition: color 0.2s;
+    }
+
+        .star.selected {
+            color: gold;
+        }
+
+    #komentar {
+        width: calc(100% - 20px);
+        min-height: 80px;
+        margin-top: 15px;
+        border-radius: 6px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    /* Override .order-button for specific use in notification sections if needed */
+    #rating-section .order-button,
+    #ride-accepted-section .order-button,
+    #ride-rejected-section .order-button,
+    #general-notification-section .order-button { /* Added for general notifications */
+        padding: 10px 20px;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
 
     #findBtn, #locateBtn {
         padding: 8px 12px;
@@ -102,72 +165,7 @@
         #locateBtn:hover {
             background-color: #636e72;
         }
-
-    <style >
-    #rating-section {
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 20px;
-        border-radius: 10px;
-        width: 60%;
-        margin: 30px auto;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .star {
-        font-size: 32px;
-        cursor: pointer;
-        color: lightgray;
-        transition: color 0.2s;
-    }
-
-        .star.selected {
-            color: gold;
-        }
-
-    #komentar {
-        width: 100%;
-        min-height: 80px;
-        margin-top: 15px;
-        border-radius: 6px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        font-family: inherit;
-        font-size: 1rem;
-    }
-
-    .order-button {
-        background-color: #2ecc71;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1rem;
-        margin-top: 10px;
-    }
-
-        .order-button:hover {
-            background-color: #27ae60;
-        }
 </style>
-
-<div id="rating-section" style="display:none;">
-    <h4 style="margin-bottom: 10px;">Molimo Vas da ostavite ocjenu za vozača:</h4>
-    <div id="star-rating">
-            @for (int i = 1; i <= 5; i++)
-            {
-            <span class="star" data-value="@i">&#9734;</span>
-            }
-    </div>
-    <textarea id="komentar" placeholder="Komentar..."></textarea>
-    <button class="order-button" onclick="submitRating()">Pošalji ocjenu</button>
-</div>
-
-</style>
-
-
-
 
 <h2>Unesite svoju lokaciju</h2>
 <div id="location-container">
@@ -182,17 +180,37 @@
     <div id="driver-list"><h3>Vozači u blizini</h3></div>
 </div>
 
-<div id="rating-section" style="display:none; margin-top: 30px;">
+<div id="overlay-backdrop" class="overlay-backdrop"></div>
+
+<div id="ride-accepted-section">
     <hr />
-    <h4>Molimo Vas da ostavite ocjenu za vozača:</h4>
+    <h4 id="ride-accepted-message"></h4>
+    <button class="order-button mt-2" onclick="hideNotification('ride-accepted-section')">OK</button>
+</div>
+
+<div id="ride-rejected-section">
+    <hr />
+    <h4 id="ride-rejected-message"></h4>
+    <button class="order-button mt-2" onclick="hideNotification('ride-rejected-section')">Razumijem</button>
+</div>
+
+<div id="rating-section">
+    <hr />
+    <h4 style="margin-bottom: 10px;">Molimo Vas da ostavite ocjenu za vozača:</h4>
     <div id="star-rating">
         @for (int i = 1; i <= 5; i++)
         {
             <span class="star" data-value="@i">&#9734;</span>
         }
     </div>
-    <textarea id="komentar" class="form-control mt-2" placeholder="Komentar..."></textarea>
-    <button class="order-button mt-2" onclick="submitRating()">Pošalji ocjenu</button>
+    <textarea id="komentar" placeholder="Komentar..."></textarea>
+    <button class="order-button" onclick="submitRating()">Pošalji ocjenu</button>
+</div>
+
+<div id="general-notification-section">
+    <hr />
+    <h4 id="general-notification-message"></h4>
+    <button class="order-button mt-2" onclick="hideNotification('general-notification-section')">Zatvori</button>
 </div>
 
 
@@ -204,6 +222,46 @@
     let userMarker;
     let driverMarkers = [];
     let dostupniVozači = [];
+    let selectedRating = 0;
+    let vozacIdZavrseneVoznje = null;
+
+    const overlayBackdrop = document.getElementById("overlay-backdrop"); // Dohvati backdrop element
+
+    // Univerzalna funkcija za prikaz notifikacije
+    function showNotification(sectionId, message, isError = false) {
+        const notificationSection = document.getElementById(sectionId);
+        const messageElement = notificationSection.querySelector('h4'); // Pretpostavljamo da je h4 unutar sekcije
+
+        // Poseban slučaj za rating-section, gdje poruka ide u h4 unutar njega
+        if (sectionId === 'rating-section') {
+             // Poruka za rating-section je fiksna, ne mijenja se dinamički u h4
+        } else {
+            messageElement.innerText = message;
+        }
+
+        notificationSection.style.display = "block";
+        overlayBackdrop.style.display = "block"; // Prikaži backdrop
+
+        // Prilagodi boju za greške
+        if (isError) {
+            notificationSection.style.borderColor = "#dc3545";
+            messageElement.style.color = "#dc3545";
+        } else {
+            notificationSection.style.borderColor = "#28a745"; // Default zeleno/uspjeh
+            messageElement.style.color = "#212529"; // Default boja teksta
+        }
+    }
+
+    //  skrivanje notifikacije
+    function hideNotification(sectionId) {
+        document.getElementById(sectionId).style.display = "none";
+        // Resetuj poruku samo za sekcije koje je dinamički mijenjaju
+        if (sectionId !== 'rating-section') {
+            document.getElementById(sectionId).querySelector('h4').innerText = "";
+        }
+
+        overlayBackdrop.style.display = "none"; // Sakrij backdrop
+    }
 
 
     // --- SignalR Klijent za Putnika ---
@@ -214,26 +272,18 @@
 
     connection.on("VoznjaPrihvacena", (rideData) => {
         console.log("Vožnja prihvaćena (putnik):", rideData);
-        // Koristimo camelCase propertije i standardni alert
-        alert(`🎉 Vozač ${rideData.vozacUserName} je prihvatio vašu vožnju (ID: ${rideData.rideId})! ${rideData.poruka}`);
+        showNotification("ride-accepted-section", `🎉 Vozač ${rideData.vozacUserName} je prihvatio vašu vožnju (ID: ${rideData.rideId})! ${rideData.poruka}`);
     });
 
     connection.on("VoznjaOdbijena", (rideData) => {
         console.log("Vožnja odbijena (putnik):", rideData);
-        // Koristimo camelCase propertije i standardni alert
-        // Poruka je sada čista i bez 'undefined'
-        alert(`😔 ${rideData.poruka} (ID vožnje: ${rideData.rideId}). Molimo pokušajte ponovo ili odaberite drugog vozača.`);
+        showNotification("ride-rejected-section", `😔 ${rideData.poruka} (ID vožnje: ${rideData.rideId}). Molimo pokušajte ponovo ili odaberite drugog vozača.`, true); // True za grešku
     });
-
-       let selectedRating = 0;
-    let vozacIdZavrseneVoznje = null;
 
     connection.on("VoznjaZavrsena", (rideData) => {
         console.log("Vožnja završena (putnik):", rideData);
-        alert(`✅ Vaša vožnja (ID: ${rideData.rideId}) je uspješno završena! ${rideData.poruka}`);
-
-        vozacIdZavrseneVoznje = rideData.vozacId; // Ovo očekuješ iz servera
-        document.getElementById("rating-section").style.display = "block";
+        vozacIdZavrseneVoznje = rideData.vozacId;
+        showNotification("rating-section", "Molimo Vas da ostavite ocjenu za vozača:"); // Ova funkcija će samo prikazati sekciju
     });
 
 
@@ -243,16 +293,14 @@
             console.log("SignalR Connected for Passenger.");
         } catch (err) {
             console.error("SignalR Connection Error for Passenger: ", err);
-            // Pokušaj ponovo nakon 5 sekundi
             setTimeout(startSignalRConnectionForPassenger, 5000);
         }
     }
 
-    // Pokreni SignalR konekciju kada se stranica učita
     startSignalRConnectionForPassenger();
     // --- Kraj SignalR Klijenta za Putnika ---
 
-        document.querySelectorAll(".star").forEach(star => {
+    document.querySelectorAll(".star").forEach(star => {
         star.addEventListener("click", function () {
             selectedRating = this.getAttribute("data-value");
             document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
@@ -267,7 +315,7 @@
         const komentar = document.getElementById("komentar").value;
 
         if (selectedRating === 0 || !vozacIdZavrseneVoznje) {
-            alert("Molimo odaberite ocjenu.");
+            showNotification("general-notification-section", "Molimo odaberite ocjenu prije slanja.", true); // Zamijenjen alert
             return;
         }
 
@@ -277,28 +325,26 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ocjena: selectedRating, // ispravno ime polja
+                ocjena: selectedRating,
                 komentar: komentar,
                 KorisnikId: vozacIdZavrseneVoznje
             })
         }).then(response => {
             if (response.ok) {
-                alert("Ocjena uspješno poslana.");
-                document.getElementById("rating-section").style.display = "none";
+                showNotification("general-notification-section", "Ocjena uspješno poslana."); // Zamijenjen alert
+                hideNotification("rating-section"); // Sakrij rating sekciju
             } else {
-                alert("Greška prilikom slanja ocjene.");
+                showNotification("general-notification-section", "Greška prilikom slanja ocjene.", true); // Zamijenjen alert
             }
         });
     }
-
-
 
 
     async function PrikazSlobodnihVozaca() {
         const location = document.getElementById("locationInput").value.trim();
 
         if (!location) {
-            alert("Molimo unesite lokaciju.");
+            showNotification("general-notification-section", "Molimo unesite lokaciju.", true); // Zamijenjen alert
             return;
         }
 
@@ -307,7 +353,7 @@
             const geoData = await geoResponse.json();
 
             if (geoData.length === 0) {
-                alert("Lokacija nije pronađena.");
+                showNotification("general-notification-section", "Lokacija nije pronađena.", true); // Zamijenjen alert
                 return;
             }
 
@@ -336,7 +382,7 @@
 
         } catch (error) {
             console.error("Greška:", error);
-            alert("Greška prilikom pretrage.");
+            showNotification("general-notification-section", "Greška prilikom pretrage vozača.", true); // Zamijenjen alert
         }
     }
 
@@ -384,13 +430,13 @@
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
     }
 
-        function getETA(distanceKm) {
+    function getETA(distanceKm) {
         const speedKmH = 60;
         const timeHours = distanceKm / speedKmH;
         const timeMinutes = Math.round(timeHours * 60);
@@ -406,14 +452,14 @@
         const odredisnaAdresa = document.getElementById("destinationInput").value.trim();
 
         if (!pocetnaAdresa) {
-            alert("Molimo unesite početnu adresu.");
+            showNotification("general-notification-section", "Molimo unesite početnu adresu.", true); // Zamijenjen alert
             return;
         }
 
         const putnikId = "@(User.Identity.IsAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value : string.Empty)";
 
         if (!putnikId) {
-            alert("Korisnik nije prijavljen. Ne možete naručiti vožnju.");
+            showNotification("general-notification-section", "Korisnik nije prijavljen. Ne možete naručiti vožnju.", true); // Zamijenjen alert
             return;
         }
 
@@ -436,14 +482,14 @@
 
             if (response.ok) {
                 const result = await response.json();
-                    const driverLatLng = dostupniVozači.find(v => v.id === driverId);
+                const driverLatLng = dostupniVozači.find(v => v.id === driverId);
+                let message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`;
                 if (driverLatLng) {
                     const distance = getDistance(userMarker.getLatLng().lat, userMarker.getLatLng().lng, driverLatLng.latitude, driverLatLng.longitude);
                     const eta = getETA(distance);
-                    alert(`Uspješno ste naručili vožnju kod vozača: ${driverName}. Procijenjeno vrijeme dolaska: ${eta} min. Očekujte potvrdu! Status: ${result.status}`);
-                } else {
-                    alert(`Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`);
+                    message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Procijenjeno vrijeme dolaska: ${eta} min. Očekujte potvrdu! Status: ${result.status}`;
                 }
+                showNotification("general-notification-section", message); // Zamijenjen alert
             } else {
                 let errorMessage = "Nepoznata greška prilikom naručivanja vožnje.";
                 try {
@@ -454,65 +500,64 @@
                     errorMessage = `Greška u odgovoru servera (status ${response.status}): ${responseText || 'Prazan odgovor'}`;
                     console.error("Greška pri parsiranju JSON odgovora:", jsonError, "Raw response:", responseText);
                 }
-                alert(`Greška prilikom naručivanja vožnje: ${errorMessage}`);
+                showNotification("general-notification-section", `Greška prilikom naručivanja vožnje: ${errorMessage}`, true); // Zamijenjen alert
             }
         } catch (error) {
             console.error("Greška prilikom slanja zahtjeva:", error);
-            alert("Došlo je do greške prilikom naručivanja vožnje.");
+            showNotification("general-notification-section", "Došlo je do greške prilikom naručivanja vožnje.", true); // Zamijenjen alert
         }
     }
 
     document.getElementById("locateBtn").addEventListener("click", () => {
-           if (!navigator.geolocation) {
-               alert("Geolokacija nije podržana.");
-               return;
-           }
+        if (!navigator.geolocation) {
+            showNotification("general-notification-section", "Geolokacija nije podržana u vašem pretraživaču.", true); // Zamijenjen alert
+            return;
+        }
 
-           navigator.geolocation.getCurrentPosition(async position => {
-               const userLat = position.coords.latitude;
-               const userLng = position.coords.longitude;
+        navigator.geolocation.getCurrentPosition(async position => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
 
-               if (!map) {
-                   map = L.map('map').setView([userLat, userLng], 14);
-                   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                       attribution: '&copy; OpenStreetMap contributors'
-                   }).addTo(map);
-               } else {
-                   map.setView([userLat, userLng], 14);
-               }
+            if (!map) {
+                map = L.map('map').setView([userLat, userLng], 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+            } else {
+                map.setView([userLat, userLng], 14);
+            }
 
-               if (userMarker) {
-                   userMarker.setLatLng([userLat, userLng]);
-               } else {
-                   userMarker = L.marker([userLat, userLng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
-               }
+            if (userMarker) {
+                userMarker.setLatLng([userLat, userLng]);
+            } else {
+                userMarker = L.marker([userLat, userLng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
+            }
 
-               try {
-                   const reverseGeoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${userLat}&lon=${userLng}`);
-                   const reverseGeoData = await reverseGeoResponse.json();
+            try {
+                const reverseGeoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${userLat}&lon=${userLng}`);
+                const reverseGeoData = await reverseGeoResponse.json();
 
-                   if (reverseGeoData && reverseGeoData.display_name) {
-                       document.getElementById("locationInput").value = reverseGeoData.display_name;
-                   } else {
-                       document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
-                   }
-               } catch (error) {
-                   console.error("Greška pri dohvaćanju adrese lokacije:", error);
-                   document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
-               }
+                if (reverseGeoData && reverseGeoData.display_name) {
+                    document.getElementById("locationInput").value = reverseGeoData.display_name;
+                } else {
+                    document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
+                }
+            } catch (error) {
+                console.error("Greška pri dohvaćanju adrese lokacije:", error);
+                document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
+            }
 
-               try {
-                   
-                   const driverResponse = await fetch(`/Vozac/PrikazSlobodnihVozaca?location=${userLat},${userLng}`);
-                   const driversData = await driverResponse.json();
-                   showNearbyDrivers(userLat, userLng, driversData);
-               } catch (error) {
-                   console.error("Greška pri dohvaćanju vozača:", error);
-                   alert("Greška pri dohvaćanju vozača.");
-               }
+            try {
+                const driverResponse = await fetch(`/Vozac/PrikazSlobodnihVozaca?location=${userLat},${userLng}`);
+                const driversData = await driverResponse.json();
+                showNearbyDrivers(userLat, userLng, driversData);
+            } catch (error) {
+                console.error("Greška pri dohvaćanju vozača:", error);
+                showNotification("general-notification-section", "Greška pri dohvaćanju vozača.", true); // Zamijenjen alert
+            }
 
-           }, error => {
-               alert("Neuspješno lociranje: " + error.message);
-           });
-       });
+        }, error => {
+            showNotification("general-notification-section", "Neuspješno lociranje: " + error.message, true); // Zamijenjen alert
+        });
+    });
 </script>
