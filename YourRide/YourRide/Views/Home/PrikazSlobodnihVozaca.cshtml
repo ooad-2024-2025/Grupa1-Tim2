@@ -463,40 +463,56 @@
     }
 
     document.getElementById("locateBtn").addEventListener("click", () => {
-        if (!navigator.geolocation) {
-            alert("Geolokacija nije podržana.");
-            return;
-        }
+           if (!navigator.geolocation) {
+               alert("Geolokacija nije podržana.");
+               return;
+           }
 
-        navigator.geolocation.getCurrentPosition(async position => {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
+           navigator.geolocation.getCurrentPosition(async position => {
+               const userLat = position.coords.latitude;
+               const userLng = position.coords.longitude;
 
-            if (!map) {
-                map = L.map('map').setView([userLat, userLng], 14);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(map);
-            } else {
-                map.setView([userLat, userLng], 14);
-            }
+               if (!map) {
+                   map = L.map('map').setView([userLat, userLng], 14);
+                   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                       attribution: '&copy; OpenStreetMap contributors'
+                   }).addTo(map);
+               } else {
+                   map.setView([userLat, userLng], 14);
+               }
 
-            if (userMarker) {
-                userMarker.setLatLng([userLat, userLng]);
-            } else {
-                userMarker = L.marker([userLat, userLng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
-            }
+               if (userMarker) {
+                   userMarker.setLatLng([userLat, userLng]);
+               } else {
+                   userMarker = L.marker([userLat, userLng]).addTo(map).bindPopup("Vaša lokacija").openPopup();
+               }
 
-            try {
-                const driverResponse = await fetch(`/Vozac/PrikazSlobodnihVozaca?location=current`);
-                const driversData = await driverResponse.json();
-                showNearbyDrivers(userLat, userLng, driversData);
-            } catch (error) {
-                alert("Greška pri dohvaćanju vozača.");
-            }
+               try {
+                   const reverseGeoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${userLat}&lon=${userLng}`);
+                   const reverseGeoData = await reverseGeoResponse.json();
 
-        }, error => {
-            alert("Neuspješno lociranje: " + error.message);
-        });
-    });
+                   if (reverseGeoData && reverseGeoData.display_name) {
+                       document.getElementById("locationInput").value = reverseGeoData.display_name;
+                   } else {
+                       document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
+                   }
+               } catch (error) {
+                   console.error("Greška pri dohvaćanju adrese lokacije:", error);
+                   document.getElementById("locationInput").value = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`; // Fallback to coordinates
+               }
+
+               try {
+                   
+                   const driverResponse = await fetch(`/Vozac/PrikazSlobodnihVozaca?location=${userLat},${userLng}`);
+                   const driversData = await driverResponse.json();
+                   showNearbyDrivers(userLat, userLng, driversData);
+               } catch (error) {
+                   console.error("Greška pri dohvaćanju vozača:", error);
+                   alert("Greška pri dohvaćanju vozača.");
+               }
+
+           }, error => {
+               alert("Neuspješno lociranje: " + error.message);
+           });
+       });
 </script>
