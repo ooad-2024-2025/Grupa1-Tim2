@@ -42,7 +42,7 @@
             </td>
             <td>
 
-                    @if (User.IsInRole("Administrator,TehnickaPodrska"))
+                    @if (User.IsInRole("Administrator") || (User.IsInRole("TehnickaPodrska")))
                     {
                         <a asp-action="Details" style="color: #2d7c85;" asp-route-id="@item.ID">Detalji</a>
                     }

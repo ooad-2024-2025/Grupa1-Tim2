@@ -28,15 +28,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.KrajnjaLokacija.ID)
             </td>
-            <td>
-    @if (User.IsInRole("Nepostojeci")){
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                
-    }
-
-                    <a asp-action="Details" style="color: #2d7c85;" asp-route-id="@item.ID">Detalji</a>
-            </td>
+                <td>
+                    @if (User.IsInRole("Nepostojeci"))
+                    {
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                
+                < a asp - action = "Delete" asp - route - id = "@item.ID" > Delete </ a > 
+                    }
+                    <a asp-action="Details" asp-route-id="@item.ID" style="color: #2d7c85;">Detalji</a>
+                </td>
         </tr>
 }
     </tbody>
