@@ -320,7 +320,7 @@
                     <td>@voznja.status.ToString()</td>
                     <td>@voznja.VrijemePocetka.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="window.location.href='/Voznja/Detalji/@voznja.ID'">Detalji</button>
+                        
                         @if (voznja.status == YourRide.Models.Status.Prihvacena)
                         {
                             <button class="btn btn-sm btn-success" onclick="confirmZavrsiVoznju('@voznja.ID')">Završi Vožnju</button>
