@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YourRide")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+547aa8f92ae5933165ceeb9ff6944b1e4bf17b6b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67bce105a7f9391ecbc89de3f4d15ce6593fd891")]
 [assembly: System.Reflection.AssemblyProductAttribute("YourRide")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YourRide")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -497,7 +497,7 @@
             if (response.ok) {
                 const result = await response.json();
                 const driverLatLng = dostupniVozači.find(v => v.id === driverId);
-                 const message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`;
+                 const message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! `;
                      showNotification("general-notification-section", message);
             } else {
                 let errorMessage = "Nepoznata greška prilikom naručivanja vožnje.";
