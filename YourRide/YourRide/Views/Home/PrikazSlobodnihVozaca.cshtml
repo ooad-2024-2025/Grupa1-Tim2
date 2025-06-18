@@ -270,10 +270,24 @@
         .withAutomaticReconnect()
         .build();
 
+
     connection.on("VoznjaPrihvacena", (rideData) => {
         console.log("Vožnja prihvaćena (putnik):", rideData);
-        showNotification("ride-accepted-section", `🎉 Vozač ${rideData.vozacUserName} je prihvatio vašu vožnju (ID: ${rideData.rideId})! ${rideData.poruka}`);
+
+        // Pronađi vozača iz liste dostupnih
+        const vozac = dostupniVozači.find(v => v.id === rideData.vozacId);
+        let etaText = "";
+
+        if (vozac && userMarker) {
+            const distance = getDistance(userMarker.getLatLng().lat, userMarker.getLatLng().lng, vozac.latitude, vozac.longitude);
+            const eta = getETA(distance);
+            etaText = ` Procijenjeno vrijeme dolaska: ${eta} min.`;
+        }
+
+        const poruka = `🎉 Vozač ${rideData.vozacUserName} je prihvatio vašu vožnju (ID: ${rideData.rideId})! Vaša vožnja je prihvaćena i vozač dolazi po vas!${etaText}`;
+        showNotification("ride-accepted-section", poruka);
     });
+
 
     connection.on("VoznjaOdbijena", (rideData) => {
         console.log("Vožnja odbijena (putnik):", rideData);
@@ -483,13 +497,8 @@
             if (response.ok) {
                 const result = await response.json();
                 const driverLatLng = dostupniVozači.find(v => v.id === driverId);
-                let message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`;
-                if (driverLatLng) {
-                    const distance = getDistance(userMarker.getLatLng().lat, userMarker.getLatLng().lng, driverLatLng.latitude, driverLatLng.longitude);
-                    const eta = getETA(distance);
-                    message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Procijenjeno vrijeme dolaska: ${eta} min. Očekujte potvrdu! Status: ${result.status}`;
-                }
-                showNotification("general-notification-section", message); // Zamijenjen alert
+                 const message = `Uspješno ste naručili vožnju kod vozača: ${driverName}. Očekujte potvrdu! Status: ${result.status}`;
+                     showNotification("general-notification-section", message);
             } else {
                 let errorMessage = "Nepoznata greška prilikom naručivanja vožnje.";
                 try {

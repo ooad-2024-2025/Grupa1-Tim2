@@ -154,9 +154,13 @@ namespace YourRide.Controllers
                     {
                         rideId = voznja.ID,
                         vozacUserName = currentDriver.UserName,
-                        poruka = "Vaša vožnja je prihvaćena i vozač dolazi po vas!"
+                        poruka = "Vaša vožnja je prihvaćena i vozač dolazi po vas!",
+                        vozacId = currentDriver.Id, // ako trebaš u klijentskom JS
+                        vozacLatitude = currentDriver.Latitude,
+                        vozacLongitude = currentDriver.Longitude
                     });
             }
+
 
             return Ok(new { message = "Vožnja prihvaćena i vozač postavljen kao zauzet." });
         }
